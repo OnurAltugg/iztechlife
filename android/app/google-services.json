@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "280748123999",
+    "project_id": "iztechlife",
+    "storage_bucket": "iztechlife.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:280748123999:android:e8df0b785c311f7dcd38ea",
+        "android_client_info": {
+          "package_name": "com.iztechlife.iztechlife"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDkKyHauhgTkK2e2_B0hO2BRRB7aR02vW0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
