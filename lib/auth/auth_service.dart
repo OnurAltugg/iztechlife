@@ -23,7 +23,7 @@ class AuthService {
           email: email, password: password);
       return cred.user;
     } catch (e) {
-      _showErrorDialog(context, "Error logging in:");
+      _showErrorDialog(context, "Information about the user is not complete or accurate.");
     }
     return null;
   }
