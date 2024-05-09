@@ -57,7 +57,7 @@ class _MainPageState extends State<MainPage> {
                       MaterialPageRoute(builder: (context) => const Profile()),
                     );
                   },
-                  icon: const Icon(Icons.person, size: 40, color: Colors.black),
+                  icon: const Icon(Icons.face, size: 40, color: Colors.black),
                 ),
                 IconButton(
                   onPressed: () {
