@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:iztechlife/pages/hitchhiking_pages/create_announcement.dart';
+import 'package:iztechlife/pages/hitchhiking_pages/display_announcements.dart';
 
 
 class HitchhikingFeatures extends StatefulWidget {
@@ -43,11 +44,11 @@ class _HitchhikingFeaturesState extends State<HitchhikingFeatures> {
           children: [
             const Text(
               "Hitchhiking Service",
-              textAlign: TextAlign.center, // Center the text
+              textAlign: TextAlign.center,
               style: TextStyle(
-                fontSize: 22.0, // Increase font size
+                fontSize: 22.0,
                 fontWeight: FontWeight.bold,
-                color: Colors.black, // Change text color
+                color: Colors.black,
                 shadows: [
                   Shadow(
                     blurRadius: 2,
@@ -67,7 +68,7 @@ class _HitchhikingFeaturesState extends State<HitchhikingFeatures> {
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFFB71C1C),
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10), // Add rounded corners
+                  borderRadius: BorderRadius.circular(10),
                 ),
               ),
               child: const Padding(
@@ -75,7 +76,7 @@ class _HitchhikingFeaturesState extends State<HitchhikingFeatures> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    SizedBox(width: 10), // Add some space between icon and text
+                    SizedBox(width: 10),
                     Text(
                       'Create Announcement',
                       style: TextStyle(fontSize: 18, color: Colors.white),
@@ -87,12 +88,15 @@ class _HitchhikingFeaturesState extends State<HitchhikingFeatures> {
             const SizedBox(height: 30.0),
             ElevatedButton(
               onPressed: () {
-                // Oluşturma işlemleri için buraya yönlendirme yapabilirsiniz.
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const DisplayAnnouncements(),
+                ));
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFFB71C1C),
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10), // Add rounded corners
+                  borderRadius: BorderRadius.circular(10),
                 ),
               ),
               child: const Padding(
@@ -100,7 +104,7 @@ class _HitchhikingFeaturesState extends State<HitchhikingFeatures> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    SizedBox(width: 10), // Add some space between icon and text
+                    SizedBox(width: 10),
                     Text(
                       'Display Announcements',
                       style: TextStyle(fontSize: 18, color: Colors.white),
@@ -112,12 +116,12 @@ class _HitchhikingFeaturesState extends State<HitchhikingFeatures> {
             const SizedBox(height: 30.0),
             ElevatedButton(
               onPressed: () {
-                // Oluşturma işlemleri için buraya yönlendirme yapabilirsiniz.
+
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFFB71C1C),
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10), // Add rounded corners
+                  borderRadius: BorderRadius.circular(10),
                 ),
               ),
               child: const Padding(
@@ -125,9 +129,9 @@ class _HitchhikingFeaturesState extends State<HitchhikingFeatures> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    SizedBox(width: 10), // Add some space between icon and text
+                    SizedBox(width: 10),
                     Text(
-                      'Delete Announcements',
+                      'My Announcements',
                       style: TextStyle(fontSize: 18, color: Colors.white),
                     ),
                   ],

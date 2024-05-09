@@ -81,15 +81,15 @@ class _CreateAnnouncementState extends State<CreateAnnouncement> {
                   onPressed: () async {
                     String Id = randomAlphaNumeric(10);
                     Map<String ,dynamic> hitchhikingInfoMap = {
-                      "Name": nameController.text,
-                      "Description": descriptionController.text,
-                      "Car Info": carInfoController.text,
-                      "Departure Location": departureLocationController.text,
-                      "Destination Location": destinationLocationController.text,
-                      "Date": dateController.text,
-                      "Time": timeController.text,
-                      "Quota": quotaController.text,
-                      "Id": Id,
+                      "name": nameController.text,
+                      "description": descriptionController.text,
+                      "car_info": carInfoController.text,
+                      "departure": departureLocationController.text,
+                      "destination": destinationLocationController.text,
+                      "date": dateController.text,
+                      "time": timeController.text,
+                      "quota": quotaController.text,
+                      "id": Id,
                     };
                     await DatabaseMethods().addHitchhikingDetails(hitchhikingInfoMap, Id).then((value){
                       Fluttertoast.showToast(
