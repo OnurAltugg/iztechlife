@@ -131,28 +131,8 @@ class _LoginScreenState extends State<LoginScreen> {
   Future<void> _login() async {
     final user = await _auth.loginUserWithEmailAndPassword(_email.text, _password.text, context);
     if (user != null) {
-      _showAlert("User Logged In");
       goToHome(context);
     }
   }
 
-  void _showAlert(String message) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text("Success"),
-          content: Text(message),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: const Text("OK"),
-            ),
-          ],
-        );
-      },
-    );
-  }
 }

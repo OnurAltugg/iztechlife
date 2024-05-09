@@ -1,5 +1,8 @@
+import 'dart:math';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class AuthService {
   final _auth = FirebaseAuth.instance;
@@ -10,11 +13,12 @@ class AuthService {
       final cred = await _auth.createUserWithEmailAndPassword(
           email: email, password: password);
       return cred.user;
-    } catch (e) {
-      _showErrorDialog(context, "Error creating user:");
+    } on FirebaseAuthException catch  (e) {
+      _showErrorDialog(context, e.message.toString());
     }
     return null;
   }
+
 
   Future<User?> loginUserWithEmailAndPassword(
       String email, String password, BuildContext context) async {
@@ -54,5 +58,9 @@ class AuthService {
         );
       },
     );
+  }
+
+  void showErrorDialog(BuildContext context, String errorMessage) {
+    _showErrorDialog(context, errorMessage);
   }
 }

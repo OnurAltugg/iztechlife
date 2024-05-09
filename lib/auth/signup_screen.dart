@@ -114,30 +114,15 @@ class _SignupScreenState extends State<SignupScreen> {
   }
 
   Future<void> _signup() async {
+    String name = _name.text.trim();
+    if (name.length < 2) {
+      _auth.showErrorDialog(context, "Name must be at least 2 characters long.");
+      return;
+    }
+
     final user = await _auth.createUserWithEmailAndPassword(_email.text, _password.text, context);
     if (user != null) {
-      _showAlert("User Created Successfully");
       goToHome(context);
     }
-  }
-
-  void _showAlert(String message) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text("Success"),
-          content: Text(message),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: const Text("OK"),
-            ),
-          ],
-        );
-      },
-    );
   }
 }
