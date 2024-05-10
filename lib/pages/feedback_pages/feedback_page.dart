@@ -17,7 +17,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
       appBar: AppBar(
         backgroundColor: const Color(0xFFB6ABAB),
         title: const Padding(
-          padding: EdgeInsets.only(right: 35.0),
+          padding: EdgeInsets.only(right: 50.0),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
