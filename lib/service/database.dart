@@ -8,6 +8,13 @@ class DatabaseMethods{
         .set(hitchhikingInfoMap);
   }
 
+  Future addUser(Map<String, dynamic> userInfoMap, String id)async{
+    return await FirebaseFirestore.instance
+        .collection("user")
+        .doc(id)
+        .set(userInfoMap);
+  }
+
   Future addFindHouseDetails(Map<String, dynamic> findHouseInfoMap, String id)async{
     return await FirebaseFirestore.instance
         .collection("findHouse")

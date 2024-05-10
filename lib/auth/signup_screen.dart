@@ -1,6 +1,11 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:iztechlife/pages/main_page.dart';
+import 'package:random_string/random_string.dart';
+import 'package:crypto/crypto.dart';
 
+import '../service/database.dart';
 import '../widgets/button.dart';
 import '../widgets/textfield.dart';
 import 'auth_service.dart';
@@ -106,7 +111,17 @@ class _SignupScreenState extends State<SignupScreen> {
     );
   }
 
-  void goToHome(BuildContext context) {
+  Future<void> goToHome(BuildContext context) async {
+    String id = randomAlphaNumeric(10);
+    String hashedPassword = sha256.convert(utf8.encode(_password.text)).toString();
+    Map<String ,dynamic> userInfoMap = {
+      "name": _name.text,
+      "email": _email.text,
+      "password": hashedPassword,
+      "id": id,
+    };
+    await DatabaseMethods().addUser(userInfoMap, id).then((value){
+    });
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => const MainPage()),
