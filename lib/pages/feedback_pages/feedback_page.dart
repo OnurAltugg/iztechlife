@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'feedback_dialog.dart';
 
 class FeedbackPage extends StatefulWidget {
-  const FeedbackPage({Key? key}) : super(key: key);
+  const FeedbackPage({super.key});
 
   @override
   State<FeedbackPage> createState() => _FeedbackPageState();
@@ -16,24 +16,27 @@ class _FeedbackPageState extends State<FeedbackPage> {
       backgroundColor: const Color(0xFFB6ABAB),
       appBar: AppBar(
         backgroundColor: const Color(0xFFB6ABAB),
-        title: const Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              "IZTECH",
-              style: TextStyle(
-                  color: Color(0xFFB71C1C),
-                  fontSize: 30.0,
-                  fontWeight: FontWeight.bold),
-            ),
-            Text(
-              "Life",
-              style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 30.0,
-                  fontWeight: FontWeight.bold),
-            )
-          ],
+        title: const Padding(
+          padding: EdgeInsets.only(right: 35.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                "IZTECH",
+                style: TextStyle(
+                    color: Color(0xFFB71C1C),
+                    fontSize: 30.0,
+                    fontWeight: FontWeight.bold),
+              ),
+              Text(
+                "Life",
+                style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 30.0,
+                    fontWeight: FontWeight.bold),
+              )
+            ],
+          ),
         ),
       ),
       body: SingleChildScrollView(
