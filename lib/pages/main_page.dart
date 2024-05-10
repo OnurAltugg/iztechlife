@@ -5,6 +5,8 @@ import 'package:iztechlife/pages/lost_property_pages/lost_property_features.dart
 import 'package:iztechlife/pages/profile.dart';
 import 'package:iztechlife/pages/socialisation_pages/socialisation_features.dart';
 
+import 'feedback_pages/feedback_page.dart';
+
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
 
@@ -63,10 +65,10 @@ class _MainPageState extends State<MainPage> {
                   onPressed: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => const Profile()),
+                      MaterialPageRoute(builder: (context) => const FeedbackPage()),
                     );
                   },
-                  icon: const Icon(Icons.settings, size: 40, color: Colors.black),
+                  icon: const Icon(Icons.feedback_outlined, size: 40, color: Colors.black),
                 ),
               ],
             ),

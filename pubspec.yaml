@@ -42,8 +42,6 @@ dependencies:
   cloud_firestore: ^4.17.2
   random_string: ^2.3.1
   fluttertoast: ^8.2.5
-  google_sign_in: ^6.2.1
-  sign_in_button: ^3.2.0
   crypto: ^3.0.3
 
 dev_dependencies:
