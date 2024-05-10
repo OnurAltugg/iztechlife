@@ -84,8 +84,7 @@ class _ProfileState extends State<Profile> {
             Center(
               child: ElevatedButton(
                 onPressed: () async {
-                  await _auth.signout(context);
-                  goToLogin(context);
+                  _showConfirmationDialog(context);
                 },
                 child: const Text(
                   "LOG OUT",
@@ -176,6 +175,34 @@ class _ProfileState extends State<Profile> {
           ),
         ],
       ),
+    );
+  }
+
+  void _showConfirmationDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text("Confirm Logout"),
+          content: const Text("Are you sure you want to log out?"),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text("CANCEL"),
+            ),
+            TextButton(
+              onPressed: () async {
+                Navigator.of(context).pop();
+                await _auth.signout(context);
+                goToLogin(context);
+              },
+              child: const Text("LOG OUT"),
+            ),
+          ],
+        );
+      },
     );
   }
 
