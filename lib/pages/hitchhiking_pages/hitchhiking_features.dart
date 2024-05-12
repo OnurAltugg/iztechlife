@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:iztechlife/pages/hitchhiking_pages/create_announcement.dart';
 import 'package:iztechlife/pages/hitchhiking_pages/display_announcements.dart';
+import 'package:iztechlife/pages/hitchhiking_pages/my_announcements.dart';
 
 
 class HitchhikingFeatures extends StatefulWidget {
@@ -119,7 +120,10 @@ class _HitchhikingFeaturesState extends State<HitchhikingFeatures> {
             const SizedBox(height: 30.0),
             ElevatedButton(
               onPressed: () {
-
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const MyAnnouncements(),
+                    ));
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFFB71C1C),
