@@ -17,24 +17,27 @@ class _SocialisationFeaturesState extends State<SocialisationFeatures> {
       backgroundColor: const Color(0xFFB6ABAB), // Scaffold background color
       appBar: AppBar(
         backgroundColor: const Color(0xFFB6ABAB),
-        title: const Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              "IZTECH",
-              style: TextStyle(
-                  color: Color(0xFFB71C1C),
-                  fontSize: 30.0,
-                  fontWeight: FontWeight.bold),
-            ),
-            Text(
-              "Life",
-              style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 30.0,
-                  fontWeight: FontWeight.bold),
-            )
-          ],
+        title: const Padding(
+          padding: EdgeInsets.only(right: 50.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                "IZTECH",
+                style: TextStyle(
+                    color: Color(0xFFB71C1C),
+                    fontSize: 30.0,
+                    fontWeight: FontWeight.bold),
+              ),
+              Text(
+                "Life",
+                style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 30.0,
+                    fontWeight: FontWeight.bold),
+              )
+            ],
+          ),
         ),
       ),
       body: Padding(
