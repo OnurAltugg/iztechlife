@@ -26,7 +26,8 @@ class GetData extends StatelessWidget {
                   Navigator.of(context).push(
                     MaterialPageRoute(
                       builder: (context) => SingleDisplayAnnouncement(
-                        id: data['id'],
+                        user_name: data['user_name'],
+                        user_email: data['user_email'],
                         name: data['name'],
                         description: data['description'],
                         car_info: data['car_info'],
@@ -42,7 +43,7 @@ class GetData extends StatelessWidget {
                 child: Column(
                   children: [
                     Text("Name: ${data['name']}"),
-                    Text("Created By: ${data['id']}"),
+                    Text("Created By: ${data['user_name']}"),
                   ],
                 ));
           }

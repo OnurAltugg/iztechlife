@@ -2,11 +2,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class SingleDisplayAnnouncement extends StatelessWidget {
-  final String id, name, description, car_info, date, time, departure, destination, quota;
+  final String user_name, user_email, name, description, car_info, date, time, departure, destination, quota;
 
   const SingleDisplayAnnouncement({
     super.key,
-    required this.id,
+    required this.user_name,
+    required this.user_email,
     required this.name,
     required this.description,
     required this.car_info,
@@ -49,8 +50,6 @@ class SingleDisplayAnnouncement extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _buildText("ID", id),
-              const SizedBox(height: 15.0),
               _buildText("Name", name),
               const SizedBox(height: 15.0),
               _buildText("Description", description),
@@ -66,6 +65,10 @@ class SingleDisplayAnnouncement extends StatelessWidget {
               _buildText("Destination Location", destination),
               const SizedBox(height: 15.0),
               _buildText("Quota", quota),
+              const SizedBox(height: 15.0),
+              _buildText("Created By", user_name),
+              const SizedBox(height: 15.0),
+              _buildText("Email", user_email),
             ],
           ),
         ),

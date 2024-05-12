@@ -1,4 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:datetime_picker_formfield_new/datetime_picker_formfield.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -28,11 +30,38 @@ class _CreateAnnouncementState extends State<CreateAnnouncement> {
   final hourFormat = DateFormat("HH:mm");
   final dateFormat = DateFormat("dd-MM-yyyy");
 
+  User? currentUser;
+  String userName = "";
+  String userEmail = "";
+
   @override
   void dispose() {
     quotaController.dispose();
     super.dispose();
   }
+
+  @override
+  void initState() {
+    super.initState();
+    getCurrentUser();
+  }
+
+  Future<void> getCurrentUser() async {
+    currentUser = FirebaseAuth.instance.currentUser;
+    if (currentUser != null) {
+      String userId = currentUser!.uid;
+      CollectionReference userDoc = FirebaseFirestore.instance.collection('user');
+      DocumentSnapshot snapshot = await userDoc.doc(userId).get();
+      if (snapshot.exists) {
+        Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
+        setState(() {
+          userName = data['name'];
+          userEmail = data['email'];
+        });
+      }
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -94,6 +123,8 @@ class _CreateAnnouncementState extends State<CreateAnnouncement> {
                         "time": timeController.text,
                         "quota": quotaController.text,
                         "id": id,
+                        "user_name": userName,
+                        "user_email": userEmail
                       };
                       await DatabaseMethods().addHitchhikingDetails(hitchhikingInfoMap, id).then((value){
                         Fluttertoast.showToast(

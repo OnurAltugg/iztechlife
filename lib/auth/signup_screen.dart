@@ -1,8 +1,8 @@
 import 'dart:convert';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:iztechlife/pages/main_page.dart';
-import 'package:random_string/random_string.dart';
 import 'package:crypto/crypto.dart';
 
 import '../service/database.dart';
@@ -24,12 +24,27 @@ class _SignupScreenState extends State<SignupScreen> {
   final TextEditingController _email = TextEditingController();
   final TextEditingController _password = TextEditingController();
 
+  User? currentUser;
+  String id = "";
+
   @override
   void dispose() {
     _name.dispose();
     _email.dispose();
     _password.dispose();
     super.dispose();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    FirebaseAuth.instance.authStateChanges().listen((User? user) {
+      if (user != null) {
+        setState(() {
+          id = user.uid;
+        });
+      }
+    });
   }
 
   @override
@@ -112,7 +127,6 @@ class _SignupScreenState extends State<SignupScreen> {
   }
 
   Future<void> goToHome(BuildContext context) async {
-    String id = randomAlphaNumeric(10);
     String hashedPassword = sha256.convert(utf8.encode(_password.text)).toString();
     Map<String ,dynamic> userInfoMap = {
       "name": _name.text,
