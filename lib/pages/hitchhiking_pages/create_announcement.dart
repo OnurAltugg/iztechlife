@@ -16,14 +16,14 @@ class CreateAnnouncement extends StatefulWidget {
 }
 
 class _CreateAnnouncementState extends State<CreateAnnouncement> {
-  TextEditingController nameController = new TextEditingController();
-  TextEditingController descriptionController = new TextEditingController();
-  TextEditingController carInfoController = new TextEditingController();
-  TextEditingController departureLocationController = new TextEditingController();
-  TextEditingController destinationLocationController = new TextEditingController();
-  TextEditingController dateController = new TextEditingController();
-  TextEditingController timeController = new TextEditingController();
-  TextEditingController quotaController = new TextEditingController();
+  TextEditingController nameController = TextEditingController();
+  TextEditingController descriptionController = TextEditingController();
+  TextEditingController carInfoController = TextEditingController();
+  TextEditingController departureLocationController = TextEditingController();
+  TextEditingController destinationLocationController = TextEditingController();
+  TextEditingController dateController = TextEditingController();
+  TextEditingController timeController = TextEditingController();
+  TextEditingController quotaController = TextEditingController();
 
   final hourFormat = DateFormat("HH:mm");
   final dateFormat = DateFormat("dd-MM-yyyy");
@@ -82,33 +82,45 @@ class _CreateAnnouncementState extends State<CreateAnnouncement> {
               Center(
                 child: ElevatedButton(
                   onPressed: () async {
-                    String Id = randomAlphaNumeric(10);
-                    Map<String ,dynamic> hitchhikingInfoMap = {
-                      "name": nameController.text,
-                      "description": descriptionController.text,
-                      "car_info": carInfoController.text,
-                      "departure": departureLocationController.text,
-                      "destination": destinationLocationController.text,
-                      "date": dateController.text,
-                      "time": timeController.text,
-                      "quota": quotaController.text,
-                      "id": Id,
-                    };
-                    await DatabaseMethods().addHitchhikingDetails(hitchhikingInfoMap, Id).then((value){
+                    if (_validateForm()) {
+                      String id = randomAlphaNumeric(10);
+                      Map<String ,dynamic> hitchhikingInfoMap = {
+                        "name": nameController.text,
+                        "description": descriptionController.text,
+                        "car_info": carInfoController.text,
+                        "departure": departureLocationController.text,
+                        "destination": destinationLocationController.text,
+                        "date": dateController.text,
+                        "time": timeController.text,
+                        "quota": quotaController.text,
+                        "id": id,
+                      };
+                      await DatabaseMethods().addHitchhikingDetails(hitchhikingInfoMap, id).then((value){
+                        Fluttertoast.showToast(
+                            msg: "Hitchhiking details added successfully.",
+                            toastLength: Toast.LENGTH_SHORT,
+                            gravity: ToastGravity.CENTER,
+                            timeInSecForIosWeb: 1,
+                            backgroundColor: Colors.green,
+                            textColor: Colors.white,
+                            fontSize: 16.0
+                        );
+                      });
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => const HitchhikingFeatures()),
+                      );
+                    } else {
                       Fluttertoast.showToast(
-                          msg: "Hitchhiking details added successfully.",
+                          msg: "Please fill all fields",
                           toastLength: Toast.LENGTH_SHORT,
                           gravity: ToastGravity.CENTER,
                           timeInSecForIosWeb: 1,
-                          backgroundColor: Colors.green,
+                          backgroundColor: Colors.red,
                           textColor: Colors.white,
                           fontSize: 16.0
                       );
-                    });
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => const HitchhikingFeatures()),
-                    );
+                    }
                   },
                   child: const Text(
                     "SUBMIT",
@@ -145,9 +157,9 @@ class _CreateAnnouncementState extends State<CreateAnnouncement> {
           ),
           child: TextField(
             controller: inputController,
-            style: TextStyle(color: Colors.black),
-            decoration: InputDecoration(border: InputBorder.none),
-            cursorColor: Color(0xFFB71C1C),
+            style: const TextStyle(color: Colors.black),
+            decoration: const InputDecoration(border: InputBorder.none),
+            cursorColor: const Color(0xFFB71C1C),
           ),
         ),
         const SizedBox(height: 15.0),
@@ -262,5 +274,16 @@ class _CreateAnnouncementState extends State<CreateAnnouncement> {
         const SizedBox(height: 15.0),
       ],
     );
+  }
+
+  bool _validateForm() {
+    return nameController.text.isNotEmpty &&
+        descriptionController.text.isNotEmpty &&
+        carInfoController.text.isNotEmpty &&
+        departureLocationController.text.isNotEmpty &&
+        destinationLocationController.text.isNotEmpty &&
+        dateController.text.isNotEmpty &&
+        timeController.text.isNotEmpty &&
+        quotaController.text.isNotEmpty;
   }
 }
