@@ -42,8 +42,8 @@ class GetData extends StatelessWidget {
                 },
                 child: Column(
                   children: [
-                    Text("Name: ${data['name']}"),
-                    Text("Created By: ${data['user_name']}"),
+                    Text("Name: ${data['name']}", style: const TextStyle(color: Colors.white, fontSize: 18.0, fontWeight: FontWeight.bold)),
+                    Text("Created By: ${data['user_name']}", style: const TextStyle(color: Colors.white, fontSize: 14.0, fontWeight: FontWeight.bold)),
                   ],
                 ));
           }
