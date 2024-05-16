@@ -4,7 +4,7 @@ import 'package:iztechlife/pages/hitchhiking_pages/single_display_announcement.d
 
 class GetData extends StatelessWidget {
   final String documentId;
-  GetData({required this.documentId});
+  const GetData({super.key, required this.documentId});
 
   @override
   Widget build(BuildContext context) {
@@ -42,7 +42,7 @@ class GetData extends StatelessWidget {
                 },
                 child: Column(
                   children: [
-                    Text("Name: ${data['name']}", style: const TextStyle(color: Colors.white, fontSize: 18.0, fontWeight: FontWeight.bold)),
+                    Text("${data['name']}", style: const TextStyle(color: Colors.white, fontSize: 18.0, fontWeight: FontWeight.bold)),
                     Text("Created By: ${data['user_name']}", style: const TextStyle(color: Colors.white, fontSize: 14.0, fontWeight: FontWeight.bold)),
                   ],
                 ));
