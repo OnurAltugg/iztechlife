@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-
 import '../../service/hitchhiking_get_data/get_my_data.dart';
 
 class MyAnnouncements extends StatefulWidget {
@@ -13,25 +12,57 @@ class MyAnnouncements extends StatefulWidget {
 
 class _MyAnnouncementsState extends State<MyAnnouncements> {
   final user = FirebaseAuth.instance.currentUser!;
-
-  final _email = TextEditingController();
-  final _password = TextEditingController();
+  List<String> docIds = [];
 
   @override
-  void dispose() {
-    super.dispose();
-    _email.dispose();
-    _password.dispose();
+  void initState() {
+    super.initState();
+    getDocID();
   }
-  List<String> docIds = [];
-  Future getDocID() async{
-    await FirebaseFirestore.instance.collection('hitchhiking').get().then(
-          (document) => document.docs.forEach((element) {
-        docIds.add(element.reference.id);
 
-      }),
-    );
+  Future<void> getDocID() async {
+    final documents =
+    await FirebaseFirestore.instance.collection('hitchhiking').get();
+    setState(() {
+      docIds = documents.docs.map((doc) => doc.id).toList();
+    });
   }
+
+  Future<void> deleteDocument(String documentId) async {
+    bool confirmDelete = await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text("Delete Announcement"),
+          content: const Text("Are you sure you want to delete this document?"),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(false);
+              },
+              child: const Text("Cancel"),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(true);
+              },
+              child: const Text("Delete"),
+            ),
+          ],
+        );
+      },
+    );
+    if (confirmDelete == true) {
+      await FirebaseFirestore.instance
+          .collection('hitchhiking')
+          .doc(documentId)
+          .delete();
+      setState(() {
+        docIds.remove(documentId);
+      });
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -62,23 +93,30 @@ class _MyAnnouncementsState extends State<MyAnnouncements> {
           ),
         ),
       ),
-      body: Column(
-        children: [
-          FutureBuilder(
-            future: getDocID(),
-            builder: (context, document){
-              return Expanded(
-                child: ListView.builder(
-                    shrinkWrap: true,
-                    itemCount: docIds.length,
-                    itemBuilder: (context, index){
-                      return ListTile(
-                        title: GetMyData(documentId: docIds[index],),
-                      );
-                    }),
-              );
-            },),
-        ],
+      body: Padding(
+        padding: const EdgeInsets.only(top: 20.0),
+        child: Column(
+          children: [
+            Expanded(
+              child: ListView.separated(
+                shrinkWrap: true,
+                itemCount: docIds.length,
+                separatorBuilder: (BuildContext context, int index) {
+                  return const SizedBox(height: 20);
+                },
+                itemBuilder: (context, index) {
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                    child: GetMyData(
+                      documentId: docIds[index],
+                      onDelete: (deletedDocId) => deleteDocument(deletedDocId),
+                    ),
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

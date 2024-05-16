@@ -35,8 +35,4 @@ class DatabaseMethods{
         .doc(id)
         .set(socialisationMap);
   }
-
-  Future deleteDetail(String id, String collectionName)async{
-    await FirebaseFirestore.instance.collection(collectionName).doc(id).delete();
-  }
 }
