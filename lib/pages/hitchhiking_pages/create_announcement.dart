@@ -315,6 +315,7 @@ class _CreateAnnouncementState extends State<CreateAnnouncement> {
         destinationLocationController.text.isNotEmpty &&
         dateController.text.isNotEmpty &&
         timeController.text.isNotEmpty &&
-        quotaController.text.isNotEmpty;
+        quotaController.text.isNotEmpty &&
+        int.parse(quotaController.text) > 0;
   }
 }
