@@ -66,58 +66,72 @@ class _MyAnnouncementsState extends State<MyAnnouncements> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xFFB6ABAB),
-      appBar: AppBar(
-        backgroundColor: const Color(0xFFB6ABAB),
-        title: const Padding(
-          padding: EdgeInsets.only(right: 50.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                "IZTECH",
-                style: TextStyle(
-                    color: Color(0xFFB71C1C),
-                    fontSize: 30.0,
-                    fontWeight: FontWeight.bold),
-              ),
-              Text(
-                "Life",
-                style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 30.0,
-                    fontWeight: FontWeight.bold),
-              )
-            ],
-          ),
-        ),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.only(top: 20.0),
-        child: Column(
-          children: [
-            Expanded(
-              child: ListView.separated(
-                shrinkWrap: true,
-                itemCount: docIds.length,
-                separatorBuilder: (BuildContext context, int index) {
-                  return const SizedBox(height: 20);
-                },
-                itemBuilder: (context, index) {
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                    child: GetMyData(
-                      documentId: docIds[index],
-                      onDelete: (deletedDocId) => deleteDocument(deletedDocId),
-                    ),
-                  );
-                },
+    final user = FirebaseAuth.instance.currentUser!;
+    return StreamBuilder<QuerySnapshot>(
+      stream: FirebaseFirestore.instance.collection('hitchhiking').snapshots(),
+      builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const CircularProgressIndicator();
+        }
+        if (snapshot.hasError) {
+          return const Text('Error');
+        }
+        final documents = snapshot.data!.docs;
+        return Scaffold(
+          backgroundColor: const Color(0xFFB6ABAB),
+          appBar: AppBar(
+            backgroundColor: const Color(0xFFB6ABAB),
+            title: const Padding(
+              padding: EdgeInsets.only(right: 50.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    "IZTECH",
+                    style: TextStyle(
+                        color: Color(0xFFB71C1C),
+                        fontSize: 30.0,
+                        fontWeight: FontWeight.bold),
+                  ),
+                  Text(
+                    "Life",
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 30.0,
+                        fontWeight: FontWeight.bold),
+                  )
+                ],
               ),
             ),
-          ],
-        ),
-      ),
+          ),
+          body: Padding(
+            padding: const EdgeInsets.only(top: 20.0),
+            child: Column(
+              children: [
+                Expanded(
+                  child: ListView.separated(
+                    shrinkWrap: true,
+                    itemCount: documents.length,
+                    separatorBuilder: (BuildContext context, int index) {
+                      return const SizedBox(height: 20);
+                    },
+                    itemBuilder: (context, index) {
+                      final documentId = documents[index].id;
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                        child: GetMyData(
+                          documentId: documentId,
+                          onDelete: (deletedDocId) => deleteDocument(deletedDocId),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 }

@@ -35,4 +35,11 @@ class DatabaseMethods{
         .doc(id)
         .set(socialisationMap);
   }
+
+  Future updateDetails(Map<String, dynamic> updateInfo, String id)async{
+    return await FirebaseFirestore.instance
+        .collection("hitchhiking")
+        .doc(id)
+        .update(updateInfo);
+  }
 }
