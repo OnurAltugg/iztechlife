@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:iztechlife/auth/login_screen.dart';
-
-import '../auth/auth_service.dart';
+import '../../auth/auth_service.dart';
 
 class Profile extends StatefulWidget {
   const Profile({super.key});

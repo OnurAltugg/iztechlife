@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:iztechlife/pages/find_house_pages/find_house_features.dart';
 import 'package:iztechlife/pages/hitchhiking_pages/hitchhiking_features.dart';
 import 'package:iztechlife/pages/lost_property_pages/lost_property_features.dart';
-import 'package:iztechlife/pages/profile.dart';
+import 'package:iztechlife/pages/profile_page/profile.dart';
 import 'package:iztechlife/pages/socialisation_pages/socialisation_features.dart';
 
 import 'feedback_pages/feedback_page.dart';
