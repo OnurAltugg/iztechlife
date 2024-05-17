@@ -42,4 +42,11 @@ class DatabaseMethods{
         .doc(id)
         .update(updateInfo);
   }
+
+  Future updateUserName(Map<String, dynamic> updateInfo, String id)async{
+    return await FirebaseFirestore.instance
+        .collection("user")
+        .doc(id)
+        .update(updateInfo);
+  }
 }
