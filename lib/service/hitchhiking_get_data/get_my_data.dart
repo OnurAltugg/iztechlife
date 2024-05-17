@@ -28,13 +28,14 @@ class GetMyData extends StatelessWidget {
   Widget build(BuildContext context) {
     CollectionReference hitchhiking =
     FirebaseFirestore.instance.collection('hitchhiking');
-    return FutureBuilder<DocumentSnapshot>(
-        future: hitchhiking.doc(documentId).get(),
-        builder: ((context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.done) {
+    return StreamBuilder<DocumentSnapshot>(
+      stream: hitchhiking.doc(documentId).snapshots(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.active) {
+          if (snapshot.hasData && snapshot.data != null) {
             Map<String, dynamic> data =
             snapshot.data!.data() as Map<String, dynamic>;
-            if (user.email == data['user_email']) {
+            if (user.uid == data['user_id']) {
               return SingleChildScrollView(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -74,16 +75,14 @@ class GetMyData extends StatelessWidget {
                                     quotaController.text = data['quota'];
                                     editAnnouncementDetail(context, documentId);
                                   },
-                                  child:
-                                  const Icon(Icons.edit, color: Colors.white),
+                                  child: const Icon(Icons.edit, color: Colors.white),
                                 ),
                                 const SizedBox(width: 5.0),
                                 GestureDetector(
                                   onTap: () async {
                                     onDelete(documentId);
                                   },
-                                  child:
-                                  const Icon(Icons.delete, color: Colors.white),
+                                  child: const Icon(Icons.delete, color: Colors.white),
                                 )
                               ],
                             ),
@@ -131,8 +130,10 @@ class GetMyData extends StatelessWidget {
               );
             }
           }
-          return const Text("");
-        }));
+        }
+        return const Text("");
+      },
+    );
   }
 
   Future editAnnouncementDetail(BuildContext context, String id) => showDialog(
@@ -165,9 +166,9 @@ class GetMyData extends StatelessWidget {
             _buildQuotaField("Quota", quotaController),
             Center(
                 child: ElevatedButton(
-                    onPressed: () async{
+                    onPressed: () async {
                       if (_validateForm()) {
-                        Map<String ,dynamic> updateInfoMap = {
+                        Map<String, dynamic> updateInfoMap = {
                           "name": nameController.text,
                           "description": descriptionController.text,
                           "car_info": carInfoController.text,
@@ -178,7 +179,9 @@ class GetMyData extends StatelessWidget {
                           "quota": quotaController.text,
                           "id": id,
                         };
-                        await DatabaseMethods().updateDetails(updateInfoMap, id).then((value){
+                        await DatabaseMethods()
+                            .updateDetails(updateInfoMap, id)
+                            .then((value) {
                           Fluttertoast.showToast(
                               msg: "Updated successfully.",
                               toastLength: Toast.LENGTH_SHORT,
@@ -186,8 +189,7 @@ class GetMyData extends StatelessWidget {
                               timeInSecForIosWeb: 1,
                               backgroundColor: Colors.green,
                               textColor: Colors.white,
-                              fontSize: 16.0
-                          );
+                              fontSize: 16.0);
                         });
                         Navigator.pop(
                           context,
@@ -200,23 +202,18 @@ class GetMyData extends StatelessWidget {
                             timeInSecForIosWeb: 1,
                             backgroundColor: Colors.red,
                             textColor: Colors.white,
-                            fontSize: 16.0
-                        );
+                            fontSize: 16.0);
                       }
                     },
-                    child: const Text("Update")
-                )
-            ),
+                    child: const Text("Update"))),
           ],
         ),
       ),
     ),
   );
 
-
-
-
-  Widget _buildTextField(String labelText, TextEditingController inputController) {
+  Widget _buildTextField(
+      String labelText, TextEditingController inputController) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -244,7 +241,8 @@ class GetMyData extends StatelessWidget {
     );
   }
 
-  Widget _buildTimeField(String labelText, TextEditingController inputController) {
+  Widget _buildTimeField(
+      String labelText, TextEditingController inputController) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -281,7 +279,8 @@ class GetMyData extends StatelessWidget {
     );
   }
 
-  Widget _buildDateField(String labelText, TextEditingController inputController) {
+  Widget _buildDateField(
+      String labelText, TextEditingController inputController) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -319,7 +318,8 @@ class GetMyData extends StatelessWidget {
     );
   }
 
-  Widget _buildQuotaField(String labelText, TextEditingController inputController) {
+  Widget _buildQuotaField(
+      String labelText, TextEditingController inputController) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../../service/hitchhiking_get_data/get_data.dart';
 
 class DisplayAnnouncements extends StatefulWidget {
-  const DisplayAnnouncements({Key? key});
+  const DisplayAnnouncements({super.key});
 
   @override
   State<DisplayAnnouncements> createState() => _DisplayAnnouncementsState();

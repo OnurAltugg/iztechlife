@@ -33,6 +33,7 @@ class _CreateAnnouncementState extends State<CreateAnnouncement> {
   User? currentUser;
   String userName = "";
   String userEmail = "";
+  String userId = "";
 
   @override
   void dispose() {
@@ -49,7 +50,7 @@ class _CreateAnnouncementState extends State<CreateAnnouncement> {
   Future<void> getCurrentUser() async {
     currentUser = FirebaseAuth.instance.currentUser;
     if (currentUser != null) {
-      String userId = currentUser!.uid;
+      userId = currentUser!.uid;
       CollectionReference userDoc = FirebaseFirestore.instance.collection('user');
       DocumentSnapshot snapshot = await userDoc.doc(userId).get();
       if (snapshot.exists) {
@@ -123,8 +124,7 @@ class _CreateAnnouncementState extends State<CreateAnnouncement> {
                         "time": timeController.text,
                         "quota": quotaController.text,
                         "id": id,
-                        "user_name": userName,
-                        "user_email": userEmail
+                        "user_id": userId,
                       };
                       await DatabaseMethods().addHitchhikingDetails(hitchhikingInfoMap, id).then((value){
                         Fluttertoast.showToast(

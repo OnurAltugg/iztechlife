@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class SingleDisplayAnnouncement extends StatelessWidget {
@@ -84,15 +83,15 @@ class SingleDisplayAnnouncement extends StatelessWidget {
         children: [
           Text(
             label,
-            style: TextStyle(
+            style: const TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.bold,
             ),
           ),
-          SizedBox(height: 4),
+          const SizedBox(height: 4),
           Text(
             text,
-            style: TextStyle(
+            style: const TextStyle(
               fontSize: 16,
             ),
           ),
