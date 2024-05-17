@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -225,8 +227,8 @@ class _ProfileState extends State<Profile> {
             TextButton(
               onPressed: () async {
                 Navigator.of(context).pop();
-                //await _auth.deleteUser();
-                goToLogin(context);
+                await _auth.deleteUser(context);
+                exit(0);
               },
               child: const Text("DELETE"),
             ),

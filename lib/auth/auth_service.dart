@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -33,6 +34,25 @@ class AuthService {
     try {
       await _auth.signOut();
     } on FirebaseAuthException catch  (e) {
+      _showErrorDialog(context, e.message.toString());
+    }
+  }
+
+  Future<void> deleteUser(BuildContext context) async {
+    try {
+      User? user = _auth.currentUser;
+      if (user != null) {
+        await FirebaseFirestore.instance.collection('user').doc(user.uid).delete();
+        QuerySnapshot hitchhikingSnapshot = await FirebaseFirestore.instance
+            .collection("hitchhiking")
+            .where('user_id', isEqualTo: user.uid)
+            .get();
+        for (QueryDocumentSnapshot doc in hitchhikingSnapshot.docs) {
+          await FirebaseFirestore.instance.collection("hitchhiking").doc(doc.id).delete();
+        }
+        await user.delete();
+      }
+    } on FirebaseAuthException catch (e) {
       _showErrorDialog(context, e.message.toString());
     }
   }
