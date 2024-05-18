@@ -48,13 +48,16 @@ class _MyAnnouncementsState extends State<MyAnnouncements> {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<QuerySnapshot>(
-      stream: FirebaseFirestore.instance.collection('hitchhiking').snapshots(),
+      stream: FirebaseFirestore.instance
+          .collection('hitchhiking')
+          .where('user_id', isEqualTo: user.uid)
+          .snapshots(),
       builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return const CircularProgressIndicator();
+          return const Center(child: CircularProgressIndicator());
         }
         if (snapshot.hasError) {
-          return const Text('Error');
+          return const Center(child: Text('Error'));
         }
         final documents = snapshot.data!.docs;
         return Scaffold(
@@ -87,32 +90,27 @@ class _MyAnnouncementsState extends State<MyAnnouncements> {
           ),
           body: Padding(
             padding: const EdgeInsets.only(top: 20.0),
-            child: Column(
-              children: [
-                Expanded(
-                  child: ListView.separated(
-                    shrinkWrap: true,
-                    itemCount: documents.length,
-                    separatorBuilder: (BuildContext context, int index) {
-                      return const SizedBox(height: 20);
-                    },
-                    itemBuilder: (context, index) {
-                      final documentId = documents[index].id;
-                      return Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                        child: GetMyData(
-                          documentId: documentId,
-                          onDelete: (deletedDocId) => deleteDocument(deletedDocId),
-                        ),
-                      );
-                    },
-                  ),
-                ),
-              ],
+            child: documents.isEmpty
+                ? const Center(child: Text("No Announcements"))
+                : ListView.separated(
+              padding: const EdgeInsets.symmetric(horizontal: 10.0),
+              shrinkWrap: true,
+              itemCount: documents.length,
+              separatorBuilder: (BuildContext context, int index) {
+                return const SizedBox(height: 20);
+              },
+              itemBuilder: (context, index) {
+                final documentId = documents[index].id;
+                return GetMyData(
+                  documentId: documentId,
+                  onDelete: (deletedDocId) => deleteDocument(deletedDocId),
+                );
+              },
             ),
           ),
         );
       },
     );
   }
+
 }
