@@ -12,21 +12,6 @@ class MyAnnouncements extends StatefulWidget {
 
 class _MyAnnouncementsState extends State<MyAnnouncements> {
   final user = FirebaseAuth.instance.currentUser!;
-  List<String> docIds = [];
-
-  @override
-  void initState() {
-    super.initState();
-    getDocID();
-  }
-
-  Future<void> getDocID() async {
-    final documents =
-    await FirebaseFirestore.instance.collection('hitchhiking').get();
-    setState(() {
-      docIds = documents.docs.map((doc) => doc.id).toList();
-    });
-  }
 
   Future<void> deleteDocument(String documentId) async {
     bool confirmDelete = await showDialog(
@@ -57,16 +42,11 @@ class _MyAnnouncementsState extends State<MyAnnouncements> {
           .collection('hitchhiking')
           .doc(documentId)
           .delete();
-      setState(() {
-        docIds.remove(documentId);
-      });
     }
   }
 
-
   @override
   Widget build(BuildContext context) {
-    final user = FirebaseAuth.instance.currentUser!;
     return StreamBuilder<QuerySnapshot>(
       stream: FirebaseFirestore.instance.collection('hitchhiking').snapshots(),
       builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
