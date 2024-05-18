@@ -10,23 +10,19 @@ class DisplayAnnouncements extends StatefulWidget {
 }
 
 class _DisplayAnnouncementsState extends State<DisplayAnnouncements> {
-  final _email = TextEditingController();
-  final _password = TextEditingController();
+  List<String> docIds = [];
 
-  @override
-  void dispose() {
-    super.dispose();
-    _email.dispose();
-    _password.dispose();
+  Future<void> getDocID() async {
+    final documents = await FirebaseFirestore.instance.collection('hitchhiking').get();
+    setState(() {
+      docIds = documents.docs.map((doc) => doc.id).toList();
+    });
   }
 
-  List<String> docIds = [];
-  Future getDocID() async {
-    await FirebaseFirestore.instance.collection('hitchhiking').get().then(
-          (document) => document.docs.forEach((element) {
-        docIds.add(element.reference.id);
-      }),
-    );
+  @override
+  void initState() {
+    super.initState();
+    getDocID();
   }
 
   @override
@@ -34,6 +30,7 @@ class _DisplayAnnouncementsState extends State<DisplayAnnouncements> {
     return Scaffold(
       backgroundColor: const Color(0xFFB6ABAB),
       appBar: AppBar(
+        surfaceTintColor: Colors.transparent,
         backgroundColor: const Color(0xFFB6ABAB),
         title: const Padding(
           padding: EdgeInsets.only(right: 50.0),
@@ -61,18 +58,13 @@ class _DisplayAnnouncementsState extends State<DisplayAnnouncements> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            FutureBuilder(
-              future: getDocID(),
-              builder: (context, document) {
-                return ListView.builder(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemCount: docIds.length,
-                  itemBuilder: (context, index) {
-                    return ListTile(
-                      title: GetData(documentId: docIds[index]),
-                    );
-                  },
+            ListView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: docIds.length,
+              itemBuilder: (context, index) {
+                return ListTile(
+                  title: GetData(documentId: docIds[index]),
                 );
               },
             ),

@@ -8,77 +8,106 @@ class GetData extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    CollectionReference hitchhiking = FirebaseFirestore.instance.collection('hitchhiking');
-    CollectionReference users = FirebaseFirestore.instance.collection('user');
+    final hitchhiking = FirebaseFirestore.instance.collection('hitchhiking');
+    final users = FirebaseFirestore.instance.collection('user');
 
     return StreamBuilder<DocumentSnapshot>(
       stream: hitchhiking.doc(documentId).snapshots(),
       builder: (context, hitchhikingSnapshot) {
-        if (hitchhikingSnapshot.connectionState == ConnectionState.active) {
-          if (hitchhikingSnapshot.hasError) {
-            return Text("Error: ${hitchhikingSnapshot.error}");
-          }
+        if (hitchhikingSnapshot.connectionState == ConnectionState.waiting) {
+          return const Text("Loading hitchhiking data...");
+        }
+        if (hitchhikingSnapshot.hasError) {
+          return Text("Error: ${hitchhikingSnapshot.error}");
+        }
+        if (!hitchhikingSnapshot.hasData || !hitchhikingSnapshot.data!.exists) {
+          return const Text("No data found");
+        }
 
-          if (!hitchhikingSnapshot.hasData || !hitchhikingSnapshot.data!.exists) {
-            return const Text("No data found");
-          }
+        final hitchhikingData = hitchhikingSnapshot.data!.data() as Map<String, dynamic>;
+        final userId = hitchhikingData['user_id'];
 
-          Map<String, dynamic> hitchhikingData = hitchhikingSnapshot.data!.data() as Map<String, dynamic>;
-          String userId = hitchhikingData['user_id'];
+        return StreamBuilder<DocumentSnapshot>(
+          stream: users.doc(userId).snapshots(),
+          builder: (context, userSnapshot) {
+            if (userSnapshot.connectionState == ConnectionState.waiting) {
+              return const Text("Loading user data...");
+            }
+            if (userSnapshot.hasError) {
+              return Text("Error: ${userSnapshot.error}");
+            }
+            if (!userSnapshot.hasData || !userSnapshot.data!.exists) {
+              return const Text("User not found");
+            }
 
-          return StreamBuilder<DocumentSnapshot>(
-            stream: users.doc(userId).snapshots(),
-            builder: (context, userSnapshot) {
-              if (userSnapshot.connectionState == ConnectionState.active) {
-                if (userSnapshot.hasError) {
-                  return Text("Error: ${userSnapshot.error}");
-                }
+            final userData = userSnapshot.data!.data() as Map<String, dynamic>;
+            final userName = userData['name'];
+            final userEmail = userData['email'];
 
-                if (!userSnapshot.hasData || !userSnapshot.data!.exists) {
-                  return const Text("User not found");
-                }
-
-                Map<String, dynamic> userData = userSnapshot.data!.data() as Map<String, dynamic>;
-                String userName = userData['name'];
-                String userEmail = userData['email'];
-
-                return ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    foregroundColor: Colors.white,
-                    backgroundColor: const Color(0xFFB71C1C),
-                    padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 40),
-                  ),
-                  onPressed: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) => SingleDisplayAnnouncement(
-                          user_name: userName,
-                          user_email: userEmail,
-                          name: hitchhikingData['name'],
-                          description: hitchhikingData['description'],
-                          car_info: hitchhikingData['car_info'],
-                          date: hitchhikingData['date'],
-                          time: hitchhikingData['time'],
-                          departure: hitchhikingData['departure'],
-                          destination: hitchhikingData['destination'],
-                          quota: hitchhikingData['quota'],
+            return Card(
+                color: const Color(0xFFB71C1C),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(15.0),
+              ),
+              elevation: 5,
+              margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+              child: InkWell(
+                onTap: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => SingleDisplayAnnouncement(
+                        user_name: userName,
+                        user_email: userEmail,
+                        name: hitchhikingData['name'],
+                        description: hitchhikingData['description'],
+                        car_info: hitchhikingData['car_info'],
+                        date: hitchhikingData['date'],
+                        time: hitchhikingData['time'],
+                        departure: hitchhikingData['departure'],
+                        destination: hitchhikingData['destination'],
+                        quota: hitchhikingData['quota'],
+                      ),
+                    ),
+                  );
+                },
+                child: Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        hitchhikingData['name'],
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 20.0,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
-                    );
-                  },
-                  child: Column(
-                    children: [
-                      Text("${hitchhikingData['name']}", style: const TextStyle(color: Colors.white, fontSize: 18.0, fontWeight: FontWeight.bold)),
-                      Text("Created By: $userName", style: const TextStyle(color: Colors.white, fontSize: 14.0, fontWeight: FontWeight.bold)),
+                      const SizedBox(height: 8),
+                      Text(
+                        "Created By: $userName",
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 16.0,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        hitchhikingData['description'],
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 14.0,
+                        ),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
                     ],
                   ),
-                );
-              }
-              return const Text("Loading user data...");
-            },
-          );
-        }
-        return const Text("Loading hitchhiking data...");
+                ),
+              ),
+            );
+          },
+        );
       },
     );
   }
