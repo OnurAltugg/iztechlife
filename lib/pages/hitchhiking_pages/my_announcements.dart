@@ -60,6 +60,7 @@ class _MyAnnouncementsState extends State<MyAnnouncements> {
         return Scaffold(
           backgroundColor: const Color(0xFFB6ABAB),
           appBar: AppBar(
+            surfaceTintColor: Colors.transparent,
             backgroundColor: const Color(0xFFB6ABAB),
             title: const Padding(
               padding: EdgeInsets.only(right: 50.0),
