@@ -36,6 +36,7 @@ class _ProfileState extends State<Profile> {
     return Scaffold(
       backgroundColor: const Color(0xFFB6ABAB),
       appBar: AppBar(
+        surfaceTintColor: Colors.transparent,
         backgroundColor: const Color(0xFFB6ABAB),
         title: const Padding(
           padding: EdgeInsets.only(right: 50.0),
@@ -60,97 +61,99 @@ class _ProfileState extends State<Profile> {
           ),
         ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            const Text(
-              "Profile",
-              textAlign: TextAlign.center, // Center the text
-              style: TextStyle(
-                fontSize: 22.0, // Increase font size
-                fontWeight: FontWeight.bold,
-                color: Colors.black, // Change text color
-                shadows: [
-                  Shadow(
-                    blurRadius: .8,
-                    offset: Offset(1, 1),
-                  ),
-                ],
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              const Text(
+                "Profile",
+                textAlign: TextAlign.center, // Center the text
+                style: TextStyle(
+                  fontSize: 22.0, // Increase font size
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black, // Change text color
+                  shadows: [
+                    Shadow(
+                      blurRadius: .8,
+                      offset: Offset(1, 1),
+                    ),
+                  ],
+                ),
               ),
-            ),
-            const SizedBox(height: 40.0),
-            StreamBuilder(
-              stream: _userDataStream,
-              builder: (context, AsyncSnapshot<DocumentSnapshot> snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const CircularProgressIndicator();
-                } else {
-                  if (snapshot.hasData && snapshot.data != null) {
-                    Map<String, dynamic>? data = snapshot.data!.data() as Map<String, dynamic>?;
-                    if (data != null) {
-                      return Column(
-                        children: [
-                          Row(
-                            children: [
-                              _buildInfo("Name", data['name']),
-                              const Spacer(),
-                              GestureDetector(
-                                onTap: () {
-                                  nameController.text = data['name'];
-                                  editName(context, data['id']);
+              const SizedBox(height: 40.0),
+              StreamBuilder(
+                stream: _userDataStream,
+                builder: (context, AsyncSnapshot<DocumentSnapshot> snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const CircularProgressIndicator();
+                  } else {
+                    if (snapshot.hasData && snapshot.data != null) {
+                      Map<String, dynamic>? data = snapshot.data!.data() as Map<String, dynamic>?;
+                      if (data != null) {
+                        return Column(
+                          children: [
+                            Row(
+                              children: [
+                                _buildInfo("Name", data['name']),
+                                const Spacer(),
+                                GestureDetector(
+                                  onTap: () {
+                                    nameController.text = data['name'];
+                                    editName(context, data['id']);
+                                  },
+                                  child:
+                                  const Icon(Icons.edit),
+                                ),
+                              ],
+                            ),
+                            _buildInfo("Email", data['email']),
+                            const SizedBox(height: 30.0),
+                            Center(
+                              child: ElevatedButton(
+                                onPressed: () async {
+                                  _showConfirmationDialog(context);
                                 },
-                                child:
-                                const Icon(Icons.edit),
-                              ),
-                            ],
-                          ),
-                          _buildInfo("Email", data['email']),
-                          const SizedBox(height: 30.0),
-                          Center(
-                            child: ElevatedButton(
-                              onPressed: () async {
-                                _showConfirmationDialog(context);
-                              },
-                              child: const Text(
-                                "LOG OUT",
-                                style: TextStyle(
-                                  fontSize: 20.0,
-                                  fontWeight: FontWeight.bold,
-                                  color: Color(0xFFB71C1C),
+                                child: const Text(
+                                  "LOG OUT",
+                                  style: TextStyle(
+                                    fontSize: 20.0,
+                                    fontWeight: FontWeight.bold,
+                                    color: Color(0xFFB71C1C),
+                                  ),
                                 ),
                               ),
                             ),
-                          ),
-                          const SizedBox(height: 350.0),
-                          Center(
-                            child: ElevatedButton(
-                              onPressed: () async {
-                                _showDeleteDialog(context);
-                              },
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: const Color(0xFFB71C1C),
-                              ),
-                              child: const Text(
-                                "DELETE ACCOUNT",
-                                style: TextStyle(
-                                  fontSize: 20.0,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white,
+                            const SizedBox(height: 350.0),
+                            Center(
+                              child: ElevatedButton(
+                                onPressed: () async {
+                                  _showDeleteDialog(context);
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: const Color(0xFFB71C1C),
+                                ),
+                                child: const Text(
+                                  "DELETE ACCOUNT",
+                                  style: TextStyle(
+                                    fontSize: 20.0,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                  ),
                                 ),
                               ),
                             ),
-                          ),
-                        ],
-                      );
+                          ],
+                        );
+                      }
                     }
+                    return const Text("No data available");
                   }
-                  return const Text("No data available");
-                }
-              },
-            ),
-          ],
+                },
+              ),
+            ],
+          ),
         ),
       ),
     );
