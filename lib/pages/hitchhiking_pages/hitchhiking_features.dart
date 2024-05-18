@@ -3,6 +3,8 @@ import 'package:iztechlife/pages/hitchhiking_pages/create_announcement.dart';
 import 'package:iztechlife/pages/hitchhiking_pages/display_announcements.dart';
 import 'package:iztechlife/pages/hitchhiking_pages/my_announcements.dart';
 
+import '../main_page.dart';
+
 
 class HitchhikingFeatures extends StatefulWidget {
   const HitchhikingFeatures({super.key});
@@ -18,6 +20,16 @@ class _HitchhikingFeaturesState extends State<HitchhikingFeatures> {
       backgroundColor: const Color(0xFFB6ABAB), // Scaffold background color
       appBar: AppBar(
         backgroundColor: const Color(0xFFB6ABAB),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios),
+          onPressed: () {
+            Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(builder: (context) => const MainPage()),
+                  (Route<dynamic> route) => false,
+            );
+          },
+        ),
         title: const Padding(
           padding: EdgeInsets.only(right: 50.0),
           child: Row(
