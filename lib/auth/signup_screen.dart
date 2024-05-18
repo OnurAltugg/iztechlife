@@ -107,7 +107,12 @@ class _SignupScreenState extends State<SignupScreen> {
               children: [
                 const Text("Already have an account? "),
                 InkWell(
-                  onTap: () => goToLogin(context),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const LoginScreen()),
+                    );
+                  },
                   child: const Text("Login", style: TextStyle(color: Color(0xFFB71C1C))),
                 )
               ],
@@ -116,13 +121,6 @@ class _SignupScreenState extends State<SignupScreen> {
           ],
         ),
       ),
-    );
-  }
-
-  void goToLogin(BuildContext context) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const LoginScreen()),
     );
   }
 

@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class AuthService {
   final _auth = FirebaseAuth.instance;
@@ -33,6 +34,15 @@ class AuthService {
   Future<void> signOut(BuildContext context) async {
     try {
       await _auth.signOut();
+      Fluttertoast.showToast(
+          msg: "Logged out successfully",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.CENTER,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.green,
+          textColor: Colors.white,
+          fontSize: 16.0
+      );
     } on FirebaseAuthException catch  (e) {
       _showErrorDialog(context, e.message.toString());
     }

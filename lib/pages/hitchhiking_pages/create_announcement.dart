@@ -7,7 +7,6 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 import 'package:iztechlife/pages/hitchhiking_pages/hitchhiking_features.dart';
 import 'package:random_string/random_string.dart';
-
 import '../../service/database.dart';
 
 class CreateAnnouncement extends StatefulWidget {
@@ -62,7 +61,6 @@ class _CreateAnnouncementState extends State<CreateAnnouncement> {
       }
     }
   }
-
 
   @override
   Widget build(BuildContext context) {

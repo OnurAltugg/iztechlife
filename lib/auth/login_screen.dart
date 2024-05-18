@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:iztechlife/auth/forgot_password.dart';
 import 'package:iztechlife/auth/signup_screen.dart';
 import 'package:iztechlife/pages/main_page.dart';
-
 import '../widgets/button.dart';
 import '../widgets/textfield.dart';
 import 'auth_service.dart';
@@ -81,7 +80,10 @@ class _LoginScreenState extends State<LoginScreen> {
                 children: [
                   const Text("Don't have an account? "),
                   InkWell(
-                    onTap: () => goToSignup(context),
+                    onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const SignupScreen()),
+                    ),
                     child: const Text(
                       "Sign Up",
                       style: TextStyle(color: Color(0xFFB71C1C)),
@@ -114,24 +116,13 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  void goToSignup(BuildContext context) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const SignupScreen()),
-    );
-  }
-
-  void goToHome(BuildContext context) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const MainPage()),
-    );
-  }
-
   Future<void> _login() async {
     final user = await _auth.loginUserWithEmailAndPassword(_email.text, _password.text, context);
     if (user != null) {
-      goToHome(context);
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const MainPage()),
+      );
     }
   }
 
