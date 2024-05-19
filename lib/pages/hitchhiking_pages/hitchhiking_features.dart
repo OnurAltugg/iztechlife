@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:iztechlife/pages/hitchhiking_pages/create_announcement.dart';
 import 'package:iztechlife/pages/hitchhiking_pages/display_announcements.dart';
 import 'package:iztechlife/pages/hitchhiking_pages/my_announcements.dart';
-
 import '../main_page.dart';
 
 
@@ -17,7 +16,7 @@ class _HitchhikingFeaturesState extends State<HitchhikingFeatures> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFB6ABAB), // Scaffold background color
+      backgroundColor: const Color(0xFFB6ABAB),
       appBar: AppBar(
         backgroundColor: const Color(0xFFB6ABAB),
         leading: IconButton(

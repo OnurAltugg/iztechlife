@@ -1,4 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:datetime_picker_formfield_new/datetime_picker_formfield.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -16,15 +18,20 @@ class CreateAnnouncement extends StatefulWidget {
 }
 
 class _CreateAnnouncementState extends State<CreateAnnouncement> {
-  TextEditingController nameController = new TextEditingController();
-  TextEditingController descriptionController = new TextEditingController();
-  TextEditingController locationController = new TextEditingController();
-  TextEditingController dateController = new TextEditingController();
-  TextEditingController timeController = new TextEditingController();
-  TextEditingController quotaController = new TextEditingController();
+  TextEditingController nameController = TextEditingController();
+  TextEditingController descriptionController = TextEditingController();
+  TextEditingController locationController = TextEditingController();
+  TextEditingController dateController = TextEditingController();
+  TextEditingController timeController = TextEditingController();
+  TextEditingController quotaController = TextEditingController();
 
   final hourFormat = DateFormat("HH:mm");
   final dateFormat = DateFormat("dd-MM-yyyy");
+
+  User? currentUser;
+  String userName = "";
+  String userEmail = "";
+  String userId = "";
 
   @override
   void dispose() {
@@ -33,10 +40,33 @@ class _CreateAnnouncementState extends State<CreateAnnouncement> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    getCurrentUser();
+  }
+
+  Future<void> getCurrentUser() async {
+    currentUser = FirebaseAuth.instance.currentUser;
+    if (currentUser != null) {
+      userId = currentUser!.uid;
+      CollectionReference userDoc = FirebaseFirestore.instance.collection('user');
+      DocumentSnapshot snapshot = await userDoc.doc(userId).get();
+      if (snapshot.exists) {
+        Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
+        setState(() {
+          userName = data['name'];
+          userEmail = data['email'];
+        });
+      }
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFB6ABAB),
       appBar: AppBar(
+        surfaceTintColor: Colors.transparent,
         backgroundColor: const Color(0xFFB6ABAB),
         title: const Padding(
           padding: EdgeInsets.only(right: 50.0),
@@ -78,31 +108,44 @@ class _CreateAnnouncementState extends State<CreateAnnouncement> {
               Center(
                 child: ElevatedButton(
                   onPressed: () async {
-                    String Id = randomAlphaNumeric(10);
-                    Map<String ,dynamic> socialisationInfoMap = {
-                      "Name": nameController.text,
-                      "Description": descriptionController.text,
-                      "Location": locationController.text,
-                      "Date": dateController.text,
-                      "Time": timeController.text,
-                      "Quota": quotaController.text,
-                      "Id": Id,
-                    };
-                    await DatabaseMethods().addSocialisationDetails(socialisationInfoMap, Id).then((value){
+                    if (_validateForm()) {
+                      String id = randomAlphaNumeric(10);
+                      Map<String ,dynamic> socialisationInfoMap = {
+                        "name": nameController.text,
+                        "description": descriptionController.text,
+                        "location": locationController.text,
+                        "date": dateController.text,
+                        "time": timeController.text,
+                        "quota": quotaController.text,
+                        "id": id,
+                        "user_id": userId,
+                      };
+                      await DatabaseMethods().addSocialisationDetails(socialisationInfoMap, id).then((value){
+                        Fluttertoast.showToast(
+                            msg: "Socialisation details added successfully.",
+                            toastLength: Toast.LENGTH_SHORT,
+                            gravity: ToastGravity.CENTER,
+                            timeInSecForIosWeb: 1,
+                            backgroundColor: Colors.green,
+                            textColor: Colors.white,
+                            fontSize: 16.0
+                        );
+                      });
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => const SocialisationFeatures()),
+                      );
+                    }else {
                       Fluttertoast.showToast(
-                          msg: "Socialisation details added successfully.",
+                          msg: "Please fill all fields",
                           toastLength: Toast.LENGTH_SHORT,
                           gravity: ToastGravity.CENTER,
                           timeInSecForIosWeb: 1,
-                          backgroundColor: Colors.green,
+                          backgroundColor: Colors.red,
                           textColor: Colors.white,
                           fontSize: 16.0
                       );
-                    });
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => const SocialisationFeatures()),
-                    );
+                    }
                   },
                   child: const Text(
                     "SUBMIT",
@@ -139,9 +182,9 @@ class _CreateAnnouncementState extends State<CreateAnnouncement> {
           ),
           child: TextField(
             controller: inputController,
-            style: TextStyle(color: Colors.black),
-            decoration: InputDecoration(border: InputBorder.none),
-            cursorColor: Color(0xFFB71C1C),
+            style: const TextStyle(color: Colors.black),
+            decoration: const InputDecoration(border: InputBorder.none),
+            cursorColor: const Color(0xFFB71C1C),
           ),
         ),
         const SizedBox(height: 15.0),
@@ -256,5 +299,15 @@ class _CreateAnnouncementState extends State<CreateAnnouncement> {
         const SizedBox(height: 15.0),
       ],
     );
+  }
+
+  bool _validateForm() {
+    return nameController.text.isNotEmpty &&
+        descriptionController.text.isNotEmpty &&
+        locationController.text.isNotEmpty &&
+        dateController.text.isNotEmpty &&
+        timeController.text.isNotEmpty &&
+        quotaController.text.isNotEmpty &&
+        int.parse(quotaController.text) > 0;
   }
 }

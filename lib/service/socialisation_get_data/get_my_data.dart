@@ -17,9 +17,7 @@ class GetMyData extends StatelessWidget {
   final dateFormat = DateFormat("dd-MM-yyyy");
   TextEditingController nameController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
-  TextEditingController carInfoController = TextEditingController();
-  TextEditingController departureLocationController = TextEditingController();
-  TextEditingController destinationLocationController = TextEditingController();
+  TextEditingController locationController = TextEditingController();
   TextEditingController dateController = TextEditingController();
   TextEditingController timeController = TextEditingController();
   TextEditingController quotaController = TextEditingController();
@@ -27,7 +25,7 @@ class GetMyData extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     CollectionReference hitchhiking =
-    FirebaseFirestore.instance.collection('hitchhiking');
+    FirebaseFirestore.instance.collection('socialisation');
     return StreamBuilder<DocumentSnapshot>(
       stream: hitchhiking.doc(documentId).snapshots(),
       builder: (context, snapshot) {
@@ -67,9 +65,7 @@ class GetMyData extends StatelessWidget {
                                   onTap: () {
                                     nameController.text = data['name'];
                                     descriptionController.text = data['description'];
-                                    carInfoController.text = data['car_info'];
-                                    departureLocationController.text = data['departure'];
-                                    destinationLocationController.text = data['destination'];
+                                    locationController.text = data['location'];
                                     dateController.text = data['date'];
                                     timeController.text = data['time'];
                                     quotaController.text = data['quota'];
@@ -91,7 +87,7 @@ class GetMyData extends StatelessWidget {
                                     color: Colors.white,
                                     fontSize: 18.0,
                                     fontWeight: FontWeight.bold)),
-                            Text("Car Info: ${data['car_info']}",
+                            Text("Location: ${data['location']}",
                                 style: const TextStyle(
                                     color: Colors.white,
                                     fontSize: 18.0,
@@ -102,16 +98,6 @@ class GetMyData extends StatelessWidget {
                                     fontSize: 18.0,
                                     fontWeight: FontWeight.bold)),
                             Text("Time: ${data['time']}",
-                                style: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 18.0,
-                                    fontWeight: FontWeight.bold)),
-                            Text("Departure Location: ${data['departure']}",
-                                style: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 18.0,
-                                    fontWeight: FontWeight.bold)),
-                            Text("Destination Location: ${data['destination']}",
                                 style: const TextStyle(
                                     color: Colors.white,
                                     fontSize: 18.0,
@@ -158,9 +144,7 @@ class GetMyData extends StatelessWidget {
             ),
             _buildTextField("Name", nameController),
             _buildTextField("Description", descriptionController),
-            _buildTextField("Car Info", carInfoController),
-            _buildTextField("Departure Location", departureLocationController),
-            _buildTextField("Destination Location", destinationLocationController),
+            _buildTextField("Location", locationController),
             _buildDateField("Date", dateController),
             _buildTimeField("Time", timeController),
             _buildQuotaField("Quota", quotaController),
@@ -171,16 +155,14 @@ class GetMyData extends StatelessWidget {
                         Map<String, dynamic> updateInfoMap = {
                           "name": nameController.text,
                           "description": descriptionController.text,
-                          "car_info": carInfoController.text,
-                          "departure": departureLocationController.text,
-                          "destination": destinationLocationController.text,
+                          "location": locationController.text,
                           "date": dateController.text,
                           "time": timeController.text,
                           "quota": quotaController.text,
                           "id": id,
                         };
                         await DatabaseMethods()
-                            .updateDetails(updateInfoMap, id, "hitchhiking")
+                            .updateDetails(updateInfoMap, id, "socialisation")
                             .then((value) {
                           Fluttertoast.showToast(
                               msg: "Updated successfully.",
@@ -356,9 +338,7 @@ class GetMyData extends StatelessWidget {
   bool _validateForm() {
     return nameController.text.isNotEmpty &&
         descriptionController.text.isNotEmpty &&
-        carInfoController.text.isNotEmpty &&
-        departureLocationController.text.isNotEmpty &&
-        destinationLocationController.text.isNotEmpty &&
+        locationController.text.isNotEmpty &&
         dateController.text.isNotEmpty &&
         timeController.text.isNotEmpty &&
         quotaController.text.isNotEmpty &&
