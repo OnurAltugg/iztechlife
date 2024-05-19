@@ -1,21 +1,33 @@
 import 'package:flutter/material.dart';
-import 'package:iztechlife/pages/find_house_pages/create_announcement.dart';
+import 'package:iztechlife/pages/accommodation_pages/create_announcement.dart';
+import 'package:iztechlife/pages/accommodation_pages/display_announcements.dart';
+import 'package:iztechlife/pages/accommodation_pages/my_announcements.dart';
+import 'package:iztechlife/pages/main_page.dart';
 
-
-class FindHouseFeatures extends StatefulWidget {
-  const FindHouseFeatures({super.key});
+class AccommodationFeatures extends StatefulWidget {
+  const AccommodationFeatures({super.key});
 
   @override
-  State<FindHouseFeatures> createState() => _FindHouseFeaturesState();
+  State<AccommodationFeatures> createState() => _AccommodationFeaturesState();
 }
 
-class _FindHouseFeaturesState extends State<FindHouseFeatures> {
+class _AccommodationFeaturesState extends State<AccommodationFeatures> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFB6ABAB),
       appBar: AppBar(
         backgroundColor: const Color(0xFFB6ABAB),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios),
+          onPressed: () {
+            Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(builder: (context) => const MainPage()),
+                  (Route<dynamic> route) => false,
+            );
+          },
+        ),
         title: const Padding(
           padding: EdgeInsets.only(right: 50.0),
           child: Row(
@@ -45,7 +57,7 @@ class _FindHouseFeaturesState extends State<FindHouseFeatures> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             const Text(
-              "Find a House Service",
+              "Accommodation Service",
               textAlign: TextAlign.center, // Center the text
               style: TextStyle(
                 fontSize: 22.0, // Increase font size
@@ -90,7 +102,10 @@ class _FindHouseFeaturesState extends State<FindHouseFeatures> {
             const SizedBox(height: 30.0),
             ElevatedButton(
               onPressed: () {
-                // Oluşturma işlemleri için buraya yönlendirme yapabilirsiniz.
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const DisplayAnnouncements(),
+                    ));
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFFB71C1C),
@@ -115,7 +130,10 @@ class _FindHouseFeaturesState extends State<FindHouseFeatures> {
             const SizedBox(height: 30.0),
             ElevatedButton(
               onPressed: () {
-                // Oluşturma işlemleri için buraya yönlendirme yapabilirsiniz.
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const MyAnnouncements(),
+                    ));
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFFB71C1C),
@@ -130,7 +148,7 @@ class _FindHouseFeaturesState extends State<FindHouseFeatures> {
                   children: [
                     SizedBox(width: 10), // Add some space between icon and text
                     Text(
-                      'Delete Announcements',
+                      'My Announcements',
                       style: TextStyle(fontSize: 18, color: Colors.white),
                     ),
                   ],

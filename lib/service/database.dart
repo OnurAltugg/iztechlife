@@ -15,11 +15,11 @@ class DatabaseMethods{
         .set(userInfoMap);
   }
 
-  Future addFindHouseDetails(Map<String, dynamic> findHouseInfoMap, String id)async{
+  Future addFindHouseDetails(Map<String, dynamic> accommodationInfoMap, String id)async{
     return await FirebaseFirestore.instance
-        .collection("findHouse")
+        .collection("accommodation")
         .doc(id)
-        .set(findHouseInfoMap);
+        .set(accommodationInfoMap);
   }
 
   Future addLostPropertyDetails(Map<String, dynamic> lostPropertyMap, String id)async{

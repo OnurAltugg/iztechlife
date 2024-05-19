@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:iztechlife/pages/socialisation_pages/single_display_announcement.dart';
+import 'package:iztechlife/pages/accommodation_pages/single_display_announcement.dart';
 
 class GetData extends StatelessWidget {
   final String documentId;
@@ -8,24 +8,24 @@ class GetData extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final socialisation = FirebaseFirestore.instance.collection('socialisation');
+    final accommodation = FirebaseFirestore.instance.collection('accommodation');
     final users = FirebaseFirestore.instance.collection('user');
 
     return StreamBuilder<DocumentSnapshot>(
-      stream: socialisation.doc(documentId).snapshots(),
-      builder: (context, socialisationSnapshot) {
-        if (socialisationSnapshot.connectionState == ConnectionState.waiting) {
-          return const Text("Loading socialisation data...");
+      stream: accommodation.doc(documentId).snapshots(),
+      builder: (context, accommodationSnapshot) {
+        if (accommodationSnapshot.connectionState == ConnectionState.waiting) {
+          return const Text("Loading accommodation data...");
         }
-        if (socialisationSnapshot.hasError) {
-          return Text("Error: ${socialisationSnapshot.error}");
+        if (accommodationSnapshot.hasError) {
+          return Text("Error: ${accommodationSnapshot.error}");
         }
-        if (!socialisationSnapshot.hasData || !socialisationSnapshot.data!.exists) {
+        if (!accommodationSnapshot.hasData || !accommodationSnapshot.data!.exists) {
           return const Text("No data found");
         }
 
-        final socialisationData = socialisationSnapshot.data!.data() as Map<String, dynamic>;
-        final userId = socialisationData['user_id'];
+        final accommodationData = accommodationSnapshot.data!.data() as Map<String, dynamic>;
+        final userId = accommodationData['user_id'];
 
         return StreamBuilder<DocumentSnapshot>(
           stream: users.doc(userId).snapshots(),
@@ -58,12 +58,12 @@ class GetData extends StatelessWidget {
                       builder: (context) => SingleDisplayAnnouncement(
                         user_name: userName,
                         user_email: userEmail,
-                        name: socialisationData['name'],
-                        description: socialisationData['description'],
-                        location: socialisationData['location'],
-                        date: socialisationData['date'],
-                        time: socialisationData['time'],
-                        quota: socialisationData['quota'],
+                        name: accommodationData['name'],
+                        description: accommodationData['description'],
+                        place: accommodationData['place'],
+                        price: accommodationData['price'],
+                        start_date: accommodationData['start_date'],
+                        end_date: accommodationData['end_date'],
                       ),
                     ),
                   );
@@ -74,7 +74,7 @@ class GetData extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        socialisationData['name'],
+                        accommodationData['name'],
                         style: const TextStyle(
                           color: Colors.white,
                           fontSize: 20.0,
@@ -91,7 +91,7 @@ class GetData extends StatelessWidget {
                       ),
                       const SizedBox(height: 4),
                       Text(
-                        socialisationData['description'],
+                        accommodationData['description'],
                         style: const TextStyle(
                           color: Colors.white,
                           fontSize: 14.0,

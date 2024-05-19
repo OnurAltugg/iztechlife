@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:iztechlife/pages/find_house_pages/find_house_features.dart';
+import 'package:iztechlife/pages/accommodation_pages/accommodation_features.dart';
 import 'package:iztechlife/pages/hitchhiking_pages/hitchhiking_features.dart';
 import 'package:iztechlife/pages/lost_property_pages/lost_property_features.dart';
 import 'package:iztechlife/pages/profile_page/profile.dart';
@@ -133,11 +133,11 @@ class _MainPageState extends State<MainPage> {
                         onPressed: () {
                           Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => const FindHouseFeatures()),
+                            MaterialPageRoute(builder: (context) => const AccommodationFeatures()),
                           );
                         },
                         icon: const Icon(Icons.home, size: 30, color: Colors.white),
-                        label: const Text('Find a House', style: TextStyle(color: Colors.white)),
+                        label: const Text('Accommodation', style: TextStyle(color: Colors.white)),
                         style: ElevatedButton.styleFrom(
                           padding: const EdgeInsets.symmetric(vertical: 20.0),
                           textStyle: const TextStyle(fontSize: 20),
