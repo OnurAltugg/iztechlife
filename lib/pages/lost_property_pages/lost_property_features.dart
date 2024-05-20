@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:iztechlife/pages/lost_property_pages/create_announcement.dart';
+import 'package:iztechlife/pages/lost_property_pages/display_announcements.dart';
+import 'package:iztechlife/pages/lost_property_pages/my_announcements.dart';
+import '../main_page.dart';
 
 class LostPropertyFeatures extends StatefulWidget {
   const LostPropertyFeatures({super.key});
@@ -12,9 +15,19 @@ class _LostPropertyFeaturesState extends State<LostPropertyFeatures> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFB6ABAB), // Scaffold background color
+      backgroundColor: const Color(0xFFB6ABAB),
       appBar: AppBar(
         backgroundColor: const Color(0xFFB6ABAB),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios),
+          onPressed: () {
+            Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(builder: (context) => const MainPage()),
+                  (Route<dynamic> route) => false,
+            );
+          },
+        ),
         title: const Padding(
           padding: EdgeInsets.only(right: 50.0),
           child: Row(
@@ -45,11 +58,11 @@ class _LostPropertyFeaturesState extends State<LostPropertyFeatures> {
           children: [
             const Text(
               "Lost Property Service",
-              textAlign: TextAlign.center, // Center the text
+              textAlign: TextAlign.center,
               style: TextStyle(
-                fontSize: 22.0, // Increase font size
+                fontSize: 22.0,
                 fontWeight: FontWeight.bold,
-                color: Colors.black, // Change text color
+                color: Colors.black,
                 shadows: [
                   Shadow(
                     blurRadius: 2,
@@ -69,7 +82,7 @@ class _LostPropertyFeaturesState extends State<LostPropertyFeatures> {
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFFB71C1C),
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10), // Add rounded corners
+                  borderRadius: BorderRadius.circular(10),
                 ),
               ),
               child: const Padding(
@@ -77,7 +90,7 @@ class _LostPropertyFeaturesState extends State<LostPropertyFeatures> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    SizedBox(width: 10), // Add some space between icon and text
+                    SizedBox(width: 10),
                     Text(
                       'Create Announcement',
                       style: TextStyle(fontSize: 18, color: Colors.white),
@@ -89,12 +102,15 @@ class _LostPropertyFeaturesState extends State<LostPropertyFeatures> {
             const SizedBox(height: 30.0),
             ElevatedButton(
               onPressed: () {
-                // Oluşturma işlemleri için buraya yönlendirme yapabilirsiniz.
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const DisplayAnnouncements(),
+                    ));
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFFB71C1C),
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10), // Add rounded corners
+                  borderRadius: BorderRadius.circular(10),
                 ),
               ),
               child: const Padding(
@@ -102,7 +118,7 @@ class _LostPropertyFeaturesState extends State<LostPropertyFeatures> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    SizedBox(width: 10), // Add some space between icon and text
+                    SizedBox(width: 10),
                     Text(
                       'Display Announcements',
                       style: TextStyle(fontSize: 18, color: Colors.white),
@@ -114,12 +130,15 @@ class _LostPropertyFeaturesState extends State<LostPropertyFeatures> {
             const SizedBox(height: 30.0),
             ElevatedButton(
               onPressed: () {
-                // Oluşturma işlemleri için buraya yönlendirme yapabilirsiniz.
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const MyAnnouncements(),
+                    ));
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFFB71C1C),
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10), // Add rounded corners
+                  borderRadius: BorderRadius.circular(10),
                 ),
               ),
               child: const Padding(
@@ -127,9 +146,9 @@ class _LostPropertyFeaturesState extends State<LostPropertyFeatures> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    SizedBox(width: 10), // Add some space between icon and text
+                    SizedBox(width: 10),
                     Text(
-                      'Delete Announcements',
+                      'My Announcements',
                       style: TextStyle(fontSize: 18, color: Colors.white),
                     ),
                   ],

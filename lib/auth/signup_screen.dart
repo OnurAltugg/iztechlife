@@ -1,10 +1,6 @@
-import 'dart:convert';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:iztechlife/pages/main_page.dart';
-import 'package:crypto/crypto.dart';
-
 import '../service/database.dart';
 import '../widgets/button.dart';
 import '../widgets/textfield.dart';
@@ -125,11 +121,9 @@ class _SignupScreenState extends State<SignupScreen> {
   }
 
   Future<void> goToHome(BuildContext context) async {
-    String hashedPassword = sha256.convert(utf8.encode(_password.text)).toString();
     Map<String ,dynamic> userInfoMap = {
       "name": _name.text,
       "email": _email.text,
-      "password": hashedPassword,
       "id": id,
     };
     await DatabaseMethods().addUser(userInfoMap, id).then((value){
