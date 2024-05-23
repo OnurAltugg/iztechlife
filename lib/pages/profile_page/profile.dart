@@ -8,6 +8,7 @@ import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:iztechlife/auth/login_screen.dart';
 import '../../auth/auth_service.dart';
 import '../../service/database.dart';
+import '../main_page.dart';
 
 class Profile extends StatefulWidget {
   const Profile({super.key});
@@ -39,26 +40,34 @@ class _ProfileState extends State<Profile> {
       appBar: AppBar(
         surfaceTintColor: Colors.transparent,
         backgroundColor: const Color(0xFFB6ABAB),
-        title: const Padding(
-          padding: EdgeInsets.only(right: 50.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                "IZTECH",
-                style: TextStyle(
-                    color: Color(0xFFB71C1C),
-                    fontSize: 30.0,
-                    fontWeight: FontWeight.bold),
-              ),
-              Text(
-                "Life",
-                style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 30.0,
-                    fontWeight: FontWeight.bold),
-              )
-            ],
+        title: GestureDetector(
+          onTap: () {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => const MainPage()),
+            );
+          },
+          child: const Padding(
+            padding: EdgeInsets.only(right: 50.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  "IZTECH",
+                  style: TextStyle(
+                      color: Color(0xFFB71C1C),
+                      fontSize: 30.0,
+                      fontWeight: FontWeight.bold),
+                ),
+                Text(
+                  "Life",
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 30.0,
+                      fontWeight: FontWeight.bold),
+                ),
+              ],
+            ),
           ),
         ),
       ),

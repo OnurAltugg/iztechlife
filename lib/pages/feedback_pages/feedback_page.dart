@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../main_page.dart';
 import 'feedback_dialog.dart';
 
 class FeedbackPage extends StatefulWidget {
@@ -15,27 +16,36 @@ class _FeedbackPageState extends State<FeedbackPage> {
     return Scaffold(
       backgroundColor: const Color(0xFFB6ABAB),
       appBar: AppBar(
+        surfaceTintColor: Colors.transparent,
         backgroundColor: const Color(0xFFB6ABAB),
-        title: const Padding(
-          padding: EdgeInsets.only(right: 50.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                "IZTECH",
-                style: TextStyle(
-                    color: Color(0xFFB71C1C),
-                    fontSize: 30.0,
-                    fontWeight: FontWeight.bold),
-              ),
-              Text(
-                "Life",
-                style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 30.0,
-                    fontWeight: FontWeight.bold),
-              )
-            ],
+        title: GestureDetector(
+          onTap: () {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => const MainPage()),
+            );
+          },
+          child: const Padding(
+            padding: EdgeInsets.only(right: 50.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  "IZTECH",
+                  style: TextStyle(
+                      color: Color(0xFFB71C1C),
+                      fontSize: 30.0,
+                      fontWeight: FontWeight.bold),
+                ),
+                Text(
+                  "Life",
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 30.0,
+                      fontWeight: FontWeight.bold),
+                ),
+              ],
+            ),
           ),
         ),
       ),
