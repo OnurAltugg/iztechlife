@@ -121,8 +121,8 @@ class _LoginScreenState extends State<LoginScreen> {
     if (user != null) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text("Welcome ${user.email}"),
-          duration: const Duration(seconds: 3),
+          content: Text("Welcome Back, ${user.email}"),
+          duration: const Duration(seconds: 2),
         ),
       );
       Navigator.pushReplacement(

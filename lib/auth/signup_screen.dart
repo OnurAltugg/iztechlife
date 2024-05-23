@@ -143,6 +143,12 @@ class _SignupScreenState extends State<SignupScreen> {
 
     final user = await _auth.createUserWithEmailAndPassword(_email.text, _password.text, context);
     if (user != null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text("Welcome, ${_name.text}"),
+          duration: const Duration(seconds: 2),
+        ),
+      );
       goToHome(context);
     }
   }
