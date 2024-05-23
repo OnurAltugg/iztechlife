@@ -1,8 +1,9 @@
+import 'dart:typed_data';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:datetime_picker_formfield_new/datetime_picker_formfield.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
@@ -20,7 +21,7 @@ class GetMyData extends StatefulWidget {
   _GetMyDataState createState() => _GetMyDataState();
 }
 
-class _GetMyDataState extends State<GetMyData>  {
+class _GetMyDataState extends State<GetMyData> {
   final user = FirebaseAuth.instance.currentUser!;
   final hourFormat = DateFormat("HH:mm");
   final dateFormat = DateFormat("dd-MM-yyyy");
@@ -93,7 +94,7 @@ class _GetMyDataState extends State<GetMyData>  {
                                     locationController.text = data['location'];
                                     dateController.text = data['date'];
                                     timeController.text = data['time'];
-                                    editAnnouncementDetail(context, documentId);
+                                    editAnnouncementDetail(context, documentId, data);
                                   },
                                   child: const Icon(Icons.edit, color: Colors.white),
                                 ),
@@ -232,7 +233,6 @@ class _GetMyDataState extends State<GetMyData>  {
                                 },
                               ),
                             ),
-
                           ],
                         ),
                       ),
@@ -248,97 +248,104 @@ class _GetMyDataState extends State<GetMyData>  {
     );
   }
 
-  Future editAnnouncementDetail(BuildContext context, String id) => showDialog(
-    context: context,
-    builder: (context) => AlertDialog(
-      content: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                GestureDetector(
-                  onTap: () {
-                    Navigator.pop(context);
-                  },
-                  child: const Icon(Icons.cancel),
-                ),
-                const SizedBox(width: 60.0),
-              ],
-            ),
-            _buildTextField("Name", nameController),
-            _buildTextField("Description", descriptionController),
-            _buildTextField("Location", locationController),
-            _buildDateField("Date", dateController),
-            _buildTimeField("Time", timeController),
-            _buildPhotoField(),
-            Center(
-              child: ElevatedButton(
-                onPressed: () async {
-                  if (_validateForm()) {
-                    Map<String, dynamic> updateInfoMap = {
-                      "name": nameController.text,
-                      "description": descriptionController.text,
-                      "location": locationController.text,
-                      "date": dateController.text,
-                      "time": timeController.text,
-                      "id": id,
-                    };
+  Future editAnnouncementDetail(BuildContext context, String id, Map<String, dynamic> data) async {
+    if (_image == null && data['image_url'] != null) {
+      _image = await _storage.getImageFromUrl(data['image_url']);
+    }
 
-                    CollectionReference lostProperty =
-                    FirebaseFirestore.instance.collection('lostProperty');
+    return showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        content: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.pop(context);
+                    },
+                    child: const Icon(Icons.cancel),
+                  ),
+                  const SizedBox(width: 60.0),
+                ],
+              ),
+              _buildTextField("Name", nameController),
+              _buildTextField("Description", descriptionController),
+              _buildTextField("Location", locationController),
+              _buildDateField("Date", dateController),
+              _buildTimeField("Time", timeController),
+              _buildPhotoField(data),
+              Center(
+                child: ElevatedButton(
+                  onPressed: () async {
+                    if (_validateForm()) {
+                      Map<String, dynamic> updateInfoMap = {
+                        "name": nameController.text,
+                        "description": descriptionController.text,
+                        "location": locationController.text,
+                        "date": dateController.text,
+                        "time": timeController.text,
+                        "id": id,
+                      };
 
-                    DocumentSnapshot documentSnapshot = await lostProperty.doc(id).get();
-                    String? oldImageUrl = documentSnapshot['image_url'];
+                      CollectionReference lostProperty =
+                      FirebaseFirestore.instance.collection('lostProperty');
 
-                    if (_image != null) {
-                      if (oldImageUrl != null && oldImageUrl.isNotEmpty) {
-                        await _storage.deleteImageFromStorage(oldImageUrl);
+                      DocumentSnapshot documentSnapshot = await lostProperty.doc(id).get();
+                      String? oldImageUrl = documentSnapshot['image_url'];
+
+                      if (_image != null) {
+                        if (oldImageUrl != null && oldImageUrl.isNotEmpty) {
+                          await _storage.deleteImageFromStorage(oldImageUrl);
+                        }
+                        String imageUrl = await _storage.uploadImageToStorage(
+                          'lostProperty/$id',
+                          _image!,
+                        );
+                        updateInfoMap['image_url'] = imageUrl;
                       }
-                      String imageUrl = await _storage.uploadImageToStorage(
-                        'lostProperty/$id',
-                        _image!,
-                      );
-                      updateInfoMap['image_url'] = imageUrl;
-                    }
 
-                    await DatabaseMethods()
-                        .updateDetails(updateInfoMap, id, "lostProperty")
-                        .then((value) {
+                      await DatabaseMethods()
+                          .updateDetails(updateInfoMap, id, "lostProperty")
+                          .then((value) {
+                        Fluttertoast.showToast(
+                          msg: "Updated successfully.",
+                          toastLength: Toast.LENGTH_SHORT,
+                          gravity: ToastGravity.CENTER,
+                          timeInSecForIosWeb: 1,
+                          backgroundColor: Colors.green,
+                          textColor: Colors.white,
+                          fontSize: 16.0,
+                        );
+                      });
+                      Navigator.pop(context);
+                    } else {
                       Fluttertoast.showToast(
-                        msg: "Updated successfully.",
+                        msg: "Please fill all fields",
                         toastLength: Toast.LENGTH_SHORT,
                         gravity: ToastGravity.CENTER,
                         timeInSecForIosWeb: 1,
-                        backgroundColor: Colors.green,
+                        backgroundColor: Colors.red,
                         textColor: Colors.white,
                         fontSize: 16.0,
                       );
-                    });
-                    Navigator.pop(context);
-                  } else {
-                    Fluttertoast.showToast(
-                      msg: "Please fill all fields",
-                      toastLength: Toast.LENGTH_SHORT,
-                      gravity: ToastGravity.CENTER,
-                      timeInSecForIosWeb: 1,
-                      backgroundColor: Colors.red,
-                      textColor: Colors.white,
-                      fontSize: 16.0,
-                    );
-                  }
-                },
-                child: const Text("Update"),
+                    }
+                  },
+                  child: const Text("Update"),
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
-    ),
-  );
+    );
+  }
 
-  Widget _buildTextField(
-      String labelText, TextEditingController inputController) {
+
+
+  Widget _buildTextField(String labelText, TextEditingController inputController) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -366,8 +373,7 @@ class _GetMyDataState extends State<GetMyData>  {
     );
   }
 
-  Widget _buildTimeField(
-      String labelText, TextEditingController inputController) {
+  Widget _buildTimeField(String labelText, TextEditingController inputController) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -388,8 +394,7 @@ class _GetMyDataState extends State<GetMyData>  {
             onShowPicker: (context, currentValue) async {
               final time = await showTimePicker(
                 context: context,
-                initialTime:
-                TimeOfDay.fromDateTime(currentValue ?? DateTime.now()),
+                initialTime: TimeOfDay.fromDateTime(currentValue ?? DateTime.now()),
               );
               return DateTimeField.convert(time);
             },
@@ -442,7 +447,7 @@ class _GetMyDataState extends State<GetMyData>  {
     );
   }
 
-  Widget _buildPhotoField() {
+  Widget _buildPhotoField(Map<String, dynamic> data) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -463,49 +468,57 @@ class _GetMyDataState extends State<GetMyData>  {
               child: const Icon(Icons.upload, color: Colors.white),
             ),
             const SizedBox(width: 20.0),
-            if (_image != null)
-              Stack(
-                children: [
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(15.0),
-                    child: Image.memory(
-                      _image!,
-                      width: 120,
-                      height: 120,
-                      fit: BoxFit.cover,
-                    ),
+            _image != null
+                ? Stack(
+              children: [
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(15.0),
+                  child: Image.memory(
+                    _image!,
+                    width: 120,
+                    height: 120,
+                    fit: BoxFit.cover,
                   ),
-                  Positioned(
-                    right: 0,
-                    child: GestureDetector(
-                      onTap: () {
+                ),
+                Positioned(
+                  right: 0,
+                  child: GestureDetector(
+                    onTap: () {
+                      if (mounted) {
                         setState(() {
                           _image = null;
                         });
-                      },
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: Colors.red.withOpacity(0.7),
-                          shape: BoxShape.circle,
-                        ),
-                        child: const Padding(
-                          padding: EdgeInsets.all(5.0),
-                          child: Icon(
-                            Icons.close,
-                            color: Colors.white,
-                            size: 20,
-                          ),
+                      }
+                    },
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.red.withOpacity(0.7),
+                        shape: BoxShape.circle,
+                      ),
+                      child: const Padding(
+                        padding: EdgeInsets.all(5.0),
+                        child: Icon(
+                          Icons.close,
+                          color: Colors.white,
+                          size: 20,
                         ),
                       ),
                     ),
                   ),
-                ],
-              )
-            else
-              const Text(
-                "No image selected",
-                style: TextStyle(color: Colors.black),
-              ),
+                ),
+              ],
+            )
+                : data['image_url'] != null
+                ? Image.network(
+              data['image_url'],
+              width: 120,
+              height: 120,
+              fit: BoxFit.cover,
+            )
+                : const Text(
+              "No image selected",
+              style: TextStyle(color: Colors.black),
+            ),
           ],
         ),
         const SizedBox(height: 15.0),
@@ -513,14 +526,9 @@ class _GetMyDataState extends State<GetMyData>  {
     );
   }
 
-
   void selectImage() async {
     Uint8List? img = await _storage.pickImage(ImageSource.gallery);
-    if (img != null) {
-      setState(() {
-        _image = img;
-      });
-    }
+    _image = img;
   }
 
   bool _validateForm() {
@@ -528,6 +536,7 @@ class _GetMyDataState extends State<GetMyData>  {
         descriptionController.text.isNotEmpty &&
         locationController.text.isNotEmpty &&
         dateController.text.isNotEmpty &&
-        timeController.text.isNotEmpty;
+        timeController.text.isNotEmpty &&
+        _image != null;
   }
 }
