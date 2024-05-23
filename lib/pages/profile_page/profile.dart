@@ -2,7 +2,9 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:iztechlife/auth/login_screen.dart';
 import '../../auth/auth_service.dart';
 import '../../service/database.dart';
@@ -68,11 +70,11 @@ class _ProfileState extends State<Profile> {
             children: [
               const Text(
                 "Profile",
-                textAlign: TextAlign.center, // Center the text
+                textAlign: TextAlign.center,
                 style: TextStyle(
-                  fontSize: 22.0, // Increase font size
+                  fontSize: 22.0,
                   fontWeight: FontWeight.bold,
-                  color: Colors.black, // Change text color
+                  color: Colors.black,
                   shadows: [
                     Shadow(
                       blurRadius: .8,
@@ -102,13 +104,33 @@ class _ProfileState extends State<Profile> {
                                     nameController.text = data['name'];
                                     editName(context, data['id']);
                                   },
-                                  child:
-                                  const Icon(Icons.edit),
+                                  child: const Icon(Icons.edit),
                                 ),
                               ],
                             ),
                             _buildInfo("Email", data['email']),
-                            const SizedBox(height: 30.0),
+                            data.containsKey('phone') && data['phone'] != null
+                                ? Row(
+                              children: [
+                                _buildInfo("Phone", data['phone']),
+                                const Spacer(),
+                                GestureDetector(
+                                  onTap: () {
+                                    _removePhoneNumber(context);
+                                  },
+                                  child: const Icon(Icons.delete),
+                                ),
+                              ],
+                            )
+                                : Center(
+                              child: ElevatedButton(
+                                onPressed: () {
+                                  _addPhoneNumber(context);
+                                },
+                                child: const Text("Add Phone Number", style: TextStyle(color: Colors.black, fontSize: 14.0), ),
+                              ),
+                            ),
+                            const SizedBox(height: 40.0),
                             Center(
                               child: ElevatedButton(
                                 onPressed: () async {
@@ -341,6 +363,98 @@ class _ProfileState extends State<Profile> {
         const SizedBox(height: 15.0),
       ],
     );
+  }
+
+  Future<void> _addPhoneNumber(BuildContext context) async {
+    TextEditingController phoneController = TextEditingController();
+    String completePhoneNumber = '';
+
+    return showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Add Phone Number'),
+          content: IntlPhoneField(
+            keyboardType: TextInputType.phone,
+            inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+            controller: phoneController,
+            focusNode: FocusNode(),
+            cursorColor: const Color(0xFFB71C1C),
+            decoration: const InputDecoration(
+              labelText: 'Phone Number',
+              border: OutlineInputBorder(
+                borderSide: BorderSide(),
+              ),
+            ),
+            initialCountryCode: 'TR',
+            onChanged: (phone) {
+              completePhoneNumber = phone.completeNumber;
+            },
+            onCountryChanged: (country) {
+            },
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () async {
+                if (completePhoneNumber.isNotEmpty) {
+                  String? currentUserId = FirebaseAuth.instance.currentUser?.uid;
+                  if (currentUserId != null) {
+                    await FirebaseFirestore.instance.collection('user').doc(currentUserId).update({
+                      'phone': completePhoneNumber,
+                    });
+                    Fluttertoast.showToast(
+                        msg: "Phone number added successfully.",
+                        toastLength: Toast.LENGTH_SHORT,
+                        gravity: ToastGravity.CENTER,
+                        timeInSecForIosWeb: 1,
+                        backgroundColor: Colors.green,
+                        textColor: Colors.white,
+                        fontSize: 16.0
+                    );
+                  }
+                  Navigator.of(context).pop();
+                } else {
+                  Fluttertoast.showToast(
+                      msg: "Please enter a valid phone number",
+                      toastLength: Toast.LENGTH_SHORT,
+                      gravity: ToastGravity.CENTER,
+                      timeInSecForIosWeb: 1,
+                      backgroundColor: Colors.red,
+                      textColor: Colors.white,
+                      fontSize: 16.0
+                  );
+                }
+              },
+              child: const Text('Add'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> _removePhoneNumber(BuildContext context) async {
+    String? currentUserId = FirebaseAuth.instance.currentUser?.uid;
+    if (currentUserId != null) {
+      await FirebaseFirestore.instance.collection('user').doc(currentUserId).update({
+        'phone': FieldValue.delete(),
+      });
+      Fluttertoast.showToast(
+          msg: "Phone number removed successfully.",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.CENTER,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.green,
+          textColor: Colors.white,
+          fontSize: 16.0
+      );
+    }
   }
 
   void goToLogin(BuildContext context) {
