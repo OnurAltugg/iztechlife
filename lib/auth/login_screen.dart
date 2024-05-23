@@ -119,7 +119,13 @@ class _LoginScreenState extends State<LoginScreen> {
   Future<void> _login() async {
     final user = await _auth.loginUserWithEmailAndPassword(_email.text, _password.text, context);
     if (user != null) {
-      Navigator.push(
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text("Welcome ${user.email}"),
+          duration: const Duration(seconds: 3),
+        ),
+      );
+      Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => const MainPage()),
       );
