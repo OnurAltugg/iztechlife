@@ -4,9 +4,8 @@ import 'package:iztechlife/pages/hitchhiking_pages/display_announcements.dart';
 import 'package:iztechlife/pages/hitchhiking_pages/my_announcements.dart';
 import '../main_page.dart';
 
-
 class HitchhikingFeatures extends StatefulWidget {
-  const HitchhikingFeatures({super.key});
+  const HitchhikingFeatures({Key? key}) : super(key: key);
 
   @override
   State<HitchhikingFeatures> createState() => _HitchhikingFeaturesState();
@@ -73,86 +72,98 @@ class _HitchhikingFeaturesState extends State<HitchhikingFeatures> {
               ),
             ),
             const SizedBox(height: 40.0),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const CreateAnnouncement()),
-                );
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFFB71C1C),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-              ),
-              child: const Padding(
-                padding: EdgeInsets.all(12.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    SizedBox(width: 10),
-                    Text(
-                      'Create Announcement',
-                      style: TextStyle(fontSize: 18, color: Colors.white),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            const SizedBox(height: 30.0),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const DisplayAnnouncements(),
-                ));
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFFB71C1C),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-              ),
-              child: const Padding(
-                padding: EdgeInsets.all(12.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    SizedBox(width: 10),
-                    Text(
-                      'Display Announcements',
-                      style: TextStyle(fontSize: 18, color: Colors.white),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            const SizedBox(height: 30.0),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.push(
+            Container(
+              margin: const EdgeInsets.only(left: 25.0, right: 25.0),
+              child: ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => const MyAnnouncements(),
-                    ));
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFFB71C1C),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
+                    MaterialPageRoute(builder: (context) => const CreateAnnouncement()),
+                  );
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFFB71C1C),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  side: const BorderSide(color: Colors.white, width: 1.0),
+                ),
+                child: const Padding(
+                  padding: EdgeInsets.all(12.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      SizedBox(width: 10),
+                      Text(
+                        'Create a Hitchhike',
+                        style: TextStyle(fontSize: 18, color: Colors.white),
+                      ),
+                    ],
+                  ),
                 ),
               ),
-              child: const Padding(
-                padding: EdgeInsets.all(12.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    SizedBox(width: 10),
-                    Text(
-                      'My Announcements',
-                      style: TextStyle(fontSize: 18, color: Colors.white),
-                    ),
-                  ],
+            ),
+            const SizedBox(height: 30.0),
+            Container(
+              margin: const EdgeInsets.only(left: 25.0, right: 25.0),
+              child: ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const DisplayAnnouncements(),
+                      ));
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFFB71C1C),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  side: const BorderSide(color: Colors.white, width: 1.0),
+                ),
+                child: const Padding(
+                  padding: EdgeInsets.all(12.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      SizedBox(width: 10),
+                      Text(
+                        'Display Hitchhikes',
+                        style: TextStyle(fontSize: 18, color: Colors.white),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(height: 30.0),
+            Container(
+              margin: const EdgeInsets.only(left: 25.0, right: 25.0),
+              child: ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const MyAnnouncements(),
+                      ));
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFFB71C1C),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  side: const BorderSide(color: Colors.white, width: 1.0),
+                ),
+                child: const Padding(
+                  padding: EdgeInsets.all(12.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      SizedBox(width: 10),
+                      Text(
+                        'My Hitchhikes',
+                        style: TextStyle(fontSize: 18, color: Colors.white),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),

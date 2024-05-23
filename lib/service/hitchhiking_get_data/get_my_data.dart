@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
+import 'package:iztechlife/service/hitchhiking_get_data/view_join_request.dart';
 
 import '../database.dart';
 
@@ -36,6 +37,10 @@ class GetMyData extends StatelessWidget {
             Map<String, dynamic> data =
             snapshot.data!.data() as Map<String, dynamic>;
             if (user.uid == data['user_id']) {
+              List<String> participants = [];
+              if (data['participants'] != null) {
+                participants = List<String>.from(data['participants']);
+              }
               return SingleChildScrollView(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -254,7 +259,25 @@ class GetMyData extends StatelessWidget {
                                 ],
                               ),
                             ),
-
+                            const SizedBox(height: 3.0),
+                            ElevatedButton(
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => ViewJoinRequestsPage(participants: participants),
+                                  ),
+                                );
+                              },
+                              child: const Text(
+                                "View Join Request",
+                                style: TextStyle(
+                                  fontSize: 16.0,
+                                  fontWeight: FontWeight.bold,
+                                  color: Color(0xFFB71C1C),
+                                ),
+                              ),
+                            ),
                           ],
                         ),
                       ),

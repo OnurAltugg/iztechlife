@@ -66,6 +66,7 @@ class GetData extends StatelessWidget {
                         departure: hitchhikingData['departure'],
                         destination: hitchhikingData['destination'],
                         quota: hitchhikingData['quota'],
+                        documentId: documentId,
                       ),
                     ),
                   );
@@ -101,6 +102,25 @@ class GetData extends StatelessWidget {
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                       ),
+                      const SizedBox(height: 6),
+                      Row(
+                        children: [
+                          const Icon(
+                            Icons.person,
+                            color: Colors.white,
+                            size: 20.0,
+                          ),
+                          const SizedBox(width: 4),
+                          Text(
+                            "${(List.from(hitchhikingData['participants'])).length}",
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 14.0,
+                            ),
+                          ),
+                        ],
+                      ),
+
                     ],
                   ),
                 ),

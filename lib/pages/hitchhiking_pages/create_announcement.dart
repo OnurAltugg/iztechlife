@@ -87,8 +87,29 @@ class _CreateAnnouncementState extends State<CreateAnnouncement> {
                     color: Colors.white,
                     fontSize: 30.0,
                     fontWeight: FontWeight.bold),
-              )
+              ),
             ],
+          ),
+        ),
+        bottom: const PreferredSize(
+          preferredSize: Size.fromHeight(50.0),
+          child: Padding(
+            padding: EdgeInsets.only(bottom: 8.0),
+            child: Text(
+              "Hitchhiking Service",
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 22.0,
+                fontWeight: FontWeight.bold,
+                color: Colors.black,
+                shadows: [
+                  Shadow(
+                    blurRadius: 2,
+                    offset: Offset(1, 1),
+                  ),
+                ],
+              ),
+            ),
           ),
         ),
       ),
@@ -124,6 +145,7 @@ class _CreateAnnouncementState extends State<CreateAnnouncement> {
                         "quota": quotaController.text,
                         "id": id,
                         "user_id": userId,
+                        "participants": []
                       };
                       await DatabaseMethods().addHitchhikingDetails(hitchhikingInfoMap, id).then((value){
                         Fluttertoast.showToast(
@@ -190,6 +212,8 @@ class _CreateAnnouncementState extends State<CreateAnnouncement> {
             style: const TextStyle(color: Colors.black),
             decoration: const InputDecoration(border: InputBorder.none),
             cursorColor: const Color(0xFFB71C1C),
+            keyboardType: TextInputType.multiline,
+            maxLines: null,
           ),
         ),
         const SizedBox(height: 15.0),
@@ -307,8 +331,7 @@ class _CreateAnnouncementState extends State<CreateAnnouncement> {
   }
 
   bool _validateForm() {
-    return nameController.text.isNotEmpty &&
-        descriptionController.text.isNotEmpty &&
+    return descriptionController.text.isNotEmpty &&
         carInfoController.text.isNotEmpty &&
         departureLocationController.text.isNotEmpty &&
         destinationLocationController.text.isNotEmpty &&
