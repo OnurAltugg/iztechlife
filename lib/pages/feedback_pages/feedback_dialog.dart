@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class FeedbackDialog extends StatefulWidget {
   const FeedbackDialog({super.key});
@@ -64,9 +65,16 @@ class _FeedbackDialogState extends State<FeedbackDialog> {
               } catch (e) {
                 message = 'Error when sending feedback!';
               }
-              ScaffoldMessenger.of(context)
-                  .showSnackBar(SnackBar(content: Text(message)));
               Navigator.pop(context);
+              Fluttertoast.showToast(
+                  msg: message,
+                  toastLength: Toast.LENGTH_SHORT,
+                  gravity: ToastGravity.CENTER,
+                  timeInSecForIosWeb: 1,
+                  backgroundColor: Colors.green,
+                  textColor: Colors.white,
+                  fontSize: 16.0
+              );
             }
           },
         )
