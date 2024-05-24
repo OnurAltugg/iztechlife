@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:iztechlife/auth/forgot_password.dart';
 import 'package:iztechlife/auth/signup_screen.dart';
 import 'package:iztechlife/pages/main_page.dart';
@@ -119,11 +120,14 @@ class _LoginScreenState extends State<LoginScreen> {
   Future<void> _login() async {
     final user = await _auth.loginUserWithEmailAndPassword(_email.text, _password.text, context);
     if (user != null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text("Welcome Back, ${user.email}"),
-          duration: const Duration(seconds: 2),
-        ),
+      Fluttertoast.showToast(
+          msg: "Welcome Back, ${user.email}",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.CENTER,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.green,
+          textColor: Colors.white,
+          fontSize: 16.0
       );
       Navigator.pushReplacement(
         context,

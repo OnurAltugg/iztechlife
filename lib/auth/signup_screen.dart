@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:iztechlife/pages/main_page.dart';
 import '../service/database.dart';
 import '../widgets/button.dart';
@@ -143,11 +144,14 @@ class _SignupScreenState extends State<SignupScreen> {
 
     final user = await _auth.createUserWithEmailAndPassword(_email.text, _password.text, context);
     if (user != null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text("Welcome, ${_name.text}"),
-          duration: const Duration(seconds: 2),
-        ),
+      Fluttertoast.showToast(
+          msg: "Welcome, ${_name.text}",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.CENTER,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.green,
+          textColor: Colors.white,
+          fontSize: 16.0
       );
       goToHome(context);
     }
