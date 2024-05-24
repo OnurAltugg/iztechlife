@@ -6,12 +6,12 @@ import 'package:fluttertoast/fluttertoast.dart';
 import '../main_page.dart';
 
 class SingleDisplayAnnouncement extends StatelessWidget {
-  final String user_name, user_email, userPhone, description, location, date, time, quota, documentId;
+  final String userName, userEmail, userPhone, description, location, date, time, quota, documentId;
 
   const SingleDisplayAnnouncement({
     super.key,
-    required this.user_name,
-    required this.user_email,
+    required this.userName,
+    required this.userEmail,
     required this.userPhone,
     required this.description,
     required this.location,
@@ -25,7 +25,7 @@ class SingleDisplayAnnouncement extends StatelessWidget {
   Widget build(BuildContext context) {
     bool isUserAnnouncement = false;
     final user = FirebaseAuth.instance.currentUser!;
-    if(user.email == user_email){
+    if(user.email == userEmail){
       isUserAnnouncement = true;
     }
     return Scaffold(
@@ -101,9 +101,9 @@ class SingleDisplayAnnouncement extends StatelessWidget {
               const SizedBox(height: 15.0),
               _buildText("Quota", quota),
               const SizedBox(height: 15.0),
-              _buildText("Created By", user_name),
+              _buildText("Created By", userName),
               const SizedBox(height: 15.0),
-              _buildText("Email", user_email),
+              _buildText("Email", userEmail),
               const SizedBox(height: 15.0),
               if(userPhone != "")
                 _buildText("Phone", userPhone),

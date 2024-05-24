@@ -59,8 +59,8 @@ class GetData extends StatelessWidget {
                   Navigator.of(context).push(
                     MaterialPageRoute(
                       builder: (context) => SingleDisplayAnnouncement(
-                        user_name: userName,
-                        user_email: userEmail,
+                        userName: userName,
+                        userEmail: userEmail,
                         userPhone: userPhone,
                         description: socialisationData['description'],
                         location: socialisationData['location'],
