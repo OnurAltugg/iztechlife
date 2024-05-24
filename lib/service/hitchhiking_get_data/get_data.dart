@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:iztechlife/pages/hitchhiking_pages/single_display_announcement.dart';
 
@@ -43,7 +44,9 @@ class GetData extends StatelessWidget {
             final userData = userSnapshot.data!.data() as Map<String, dynamic>;
             final userName = userData['name'];
             final userEmail = userData['email'];
+            final userPhone = userData['phone'] ?? "";
 
+            final currentUserId = FirebaseAuth.instance.currentUser!.uid;
             return Card(
                 color: const Color(0xFFB71C1C),
               shape: RoundedRectangleBorder(
@@ -58,6 +61,7 @@ class GetData extends StatelessWidget {
                       builder: (context) => SingleDisplayAnnouncement(
                         user_name: userName,
                         user_email: userEmail,
+                        userPhone: userPhone,
                         description: hitchhikingData['description'],
                         car_info: hitchhikingData['car_info'],
                         date: hitchhikingData['date'],
@@ -75,12 +79,23 @@ class GetData extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        "Created By: $userName",
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 16.0,
-                        ),
+                      Row(
+                        children: [
+                          Text(
+                            "Created By: $userName",
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 16.0,
+                            ),
+                          ),
+                          const Spacer(),
+                          if ((List.from(hitchhikingData['participants'])).contains(currentUserId))
+                            const Icon(
+                              Icons.star,
+                              color: Colors.yellow,
+                              size: 24.0,
+                            ),
+                        ],
                       ),
                       const SizedBox(height: 4),
                       Text(
@@ -108,6 +123,7 @@ class GetData extends StatelessWidget {
                               fontSize: 14.0,
                             ),
                           ),
+
                         ],
                       ),
 

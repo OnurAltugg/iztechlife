@@ -5,12 +5,13 @@ import 'package:flutter/material.dart';
 import '../main_page.dart';
 
 class SingleDisplayAnnouncement extends StatelessWidget {
-  final String user_name, user_email, description, car_info, date, time, departure, destination, quota, documentId;
+  final String user_name, user_email, userPhone, description, car_info, date, time, departure, destination, quota, documentId;
 
   const SingleDisplayAnnouncement({
     super.key,
     required this.user_name,
     required this.user_email,
+    required this.userPhone,
     required this.description,
     required this.car_info,
     required this.date,
@@ -87,7 +88,9 @@ class SingleDisplayAnnouncement extends StatelessWidget {
               _buildText("Created By", user_name),
               const SizedBox(height: 15.0),
               _buildText("Email", user_email),
-              const SizedBox(height: 5.0),
+              const SizedBox(height: 15.0),
+              if(userPhone != "")
+                _buildText("Phone", userPhone),
               if (!isUserAnnouncement)
                 Center(
                   child: Padding(
