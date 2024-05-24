@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
-
+import 'package:iztechlife/service/socialisation_get_data/show_participants.dart';
 import '../database.dart';
 
 class GetMyData extends StatelessWidget {
@@ -15,7 +15,6 @@ class GetMyData extends StatelessWidget {
   GetMyData({super.key, required this.documentId, required this.onDelete});
   final hourFormat = DateFormat("HH:mm");
   final dateFormat = DateFormat("dd-MM-yyyy");
-  TextEditingController nameController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
   TextEditingController locationController = TextEditingController();
   TextEditingController dateController = TextEditingController();
@@ -34,6 +33,10 @@ class GetMyData extends StatelessWidget {
             Map<String, dynamic> data =
             snapshot.data!.data() as Map<String, dynamic>;
             if (user.uid == data['user_id']) {
+              List<String> participants = [];
+              if (data['participants'] != null) {
+                participants = List<String>.from(data['participants']);
+              }
               return SingleChildScrollView(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -57,7 +60,7 @@ class GetMyData extends StatelessWidget {
                                     text: TextSpan(
                                       children: [
                                         const TextSpan(
-                                          text: "Name: ",
+                                          text: "Date: ",
                                           style: TextStyle(
                                             color: Colors.white,
                                             fontSize: 18.0,
@@ -65,7 +68,7 @@ class GetMyData extends StatelessWidget {
                                           ),
                                         ),
                                         TextSpan(
-                                          text: "${data['name']}",
+                                          text: "${data['date']}",
                                           style: const TextStyle(
                                             color: Colors.white,
                                             fontSize: 18.0,
@@ -77,7 +80,6 @@ class GetMyData extends StatelessWidget {
                                 ),
                                 GestureDetector(
                                   onTap: () {
-                                    nameController.text = data['name'];
                                     descriptionController.text = data['description'];
                                     locationController.text = data['location'];
                                     dateController.text = data['date'];
@@ -95,6 +97,28 @@ class GetMyData extends StatelessWidget {
                                   child: const Icon(Icons.delete, color: Colors.white),
                                 )
                               ],
+                            ),
+                            const SizedBox(height: 3.0),
+                            Text.rich(
+                              TextSpan(
+                                children: [
+                                  const TextSpan(
+                                    text: "Time: ",
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 18.0,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  TextSpan(
+                                    text: "${data['time']}",
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 18.0,
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
                             const SizedBox(height: 3.0),
                             Text.rich(
@@ -145,50 +169,6 @@ class GetMyData extends StatelessWidget {
                               TextSpan(
                                 children: [
                                   const TextSpan(
-                                    text: "Date: ",
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 18.0,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  TextSpan(
-                                    text: "${data['date']}",
-                                    style: const TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 18.0,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            const SizedBox(height: 3.0),
-                            Text.rich(
-                              TextSpan(
-                                children: [
-                                  const TextSpan(
-                                    text: "Time: ",
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 18.0,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  TextSpan(
-                                    text: "${data['time']}",
-                                    style: const TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 18.0,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            const SizedBox(height: 3.0),
-                            Text.rich(
-                              TextSpan(
-                                children: [
-                                  const TextSpan(
                                     text: "Quota: ",
                                     style: TextStyle(
                                       color: Colors.white,
@@ -206,6 +186,25 @@ class GetMyData extends StatelessWidget {
                                 ],
                               ),
                             ),
+                            const SizedBox(height: 3.0),
+                            ElevatedButton(
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => ShowParticipantsPage(participants: participants, documentId: documentId),
+                                  ),
+                                );
+                              },
+                              child: const Text(
+                                "Show Participants",
+                                style: TextStyle(
+                                  fontSize: 16.0,
+                                  fontWeight: FontWeight.bold,
+                                  color: Color(0xFFB71C1C),
+                                ),
+                              ),
+                            ),
                           ],
                         ),
                       ),
@@ -221,77 +220,83 @@ class GetMyData extends StatelessWidget {
     );
   }
 
-  Future editAnnouncementDetail(BuildContext context, String id) => showDialog(
-    context: context,
-    builder: (context) => AlertDialog(
-      content: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                GestureDetector(
-                  onTap: () {
-                    Navigator.pop(context);
-                  },
-                  child: const Icon(Icons.cancel),
-                ),
-                const SizedBox(
-                  width: 60.0,
-                ),
-              ],
-            ),
-            _buildTextField("Name", nameController),
-            _buildTextField("Description", descriptionController),
-            _buildTextField("Location", locationController),
-            _buildDateField("Date", dateController),
-            _buildTimeField("Time", timeController),
-            _buildQuotaField("Quota", quotaController),
-            Center(
+  Future editAnnouncementDetail(BuildContext context, String id) async {
+    DocumentSnapshot docSnapshot = await FirebaseFirestore.instance.collection('socialisation').doc(id).get();
+    Map<String, dynamic> data = docSnapshot.data() as Map<String, dynamic>;
+    List<String> participants = List<String>.from(data['participants'] ?? []);
+
+    return showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        content: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.pop(context);
+                    },
+                    child: const Icon(Icons.cancel),
+                  ),
+                  const SizedBox(
+                    width: 60.0,
+                  ),
+                ],
+              ),
+              _buildTextField("Description", descriptionController),
+              _buildTextField("Location", locationController),
+              _buildDateField("Date", dateController),
+              _buildTimeField("Time", timeController),
+              _buildQuotaField("Quota", quotaController),
+              Center(
                 child: ElevatedButton(
-                    onPressed: () async {
-                      if (_validateForm()) {
-                        Map<String, dynamic> updateInfoMap = {
-                          "name": nameController.text,
-                          "description": descriptionController.text,
-                          "location": locationController.text,
-                          "date": dateController.text,
-                          "time": timeController.text,
-                          "quota": quotaController.text,
-                          "id": id,
-                        };
-                        await DatabaseMethods()
-                            .updateDetails(updateInfoMap, id, "socialisation")
-                            .then((value) {
-                          Fluttertoast.showToast(
-                              msg: "Updated successfully.",
-                              toastLength: Toast.LENGTH_SHORT,
-                              gravity: ToastGravity.CENTER,
-                              timeInSecForIosWeb: 1,
-                              backgroundColor: Colors.green,
-                              textColor: Colors.white,
-                              fontSize: 16.0);
-                        });
-                        Navigator.pop(
-                          context,
-                        );
-                      } else {
+                  onPressed: () async {
+                    if (_validateForm(participants.length)) {
+                      Map<String, dynamic> updateInfoMap = {
+                        "description": descriptionController.text,
+                        "location": locationController.text,
+                        "date": dateController.text,
+                        "time": timeController.text,
+                        "quota": quotaController.text,
+                        "id": id,
+                      };
+                      await DatabaseMethods()
+                          .updateDetails(updateInfoMap, id, "socialisation")
+                          .then((value) {
                         Fluttertoast.showToast(
-                            msg: "Please fill all fields",
+                            msg: "Updated successfully.",
                             toastLength: Toast.LENGTH_SHORT,
                             gravity: ToastGravity.CENTER,
                             timeInSecForIosWeb: 1,
-                            backgroundColor: Colors.red,
+                            backgroundColor: Colors.green,
                             textColor: Colors.white,
                             fontSize: 16.0);
-                      }
-                    },
-                    child: const Text("Update"))),
-          ],
+                      });
+                      Navigator.pop(
+                        context,
+                      );
+                    } else {
+                      Fluttertoast.showToast(
+                          msg: "Quota cannot be less than the number of participants.",
+                          toastLength: Toast.LENGTH_SHORT,
+                          gravity: ToastGravity.CENTER,
+                          timeInSecForIosWeb: 1,
+                          backgroundColor: Colors.red,
+                          textColor: Colors.white,
+                          fontSize: 16.0);
+                    }
+                  },
+                  child: const Text("Update"),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
-    ),
-  );
+    );
+  }
 
   Widget _buildTextField(
       String labelText, TextEditingController inputController) {
@@ -434,13 +439,18 @@ class GetMyData extends StatelessWidget {
     );
   }
 
-  bool _validateForm() {
-    return nameController.text.isNotEmpty &&
-        descriptionController.text.isNotEmpty &&
-        locationController.text.isNotEmpty &&
-        dateController.text.isNotEmpty &&
-        timeController.text.isNotEmpty &&
-        quotaController.text.isNotEmpty &&
-        int.parse(quotaController.text) > 0;
+  bool _validateForm(int participantCount) {
+    if (descriptionController.text.isEmpty ||
+        locationController.text.isEmpty ||
+        dateController.text.isEmpty ||
+        timeController.text.isEmpty ||
+        quotaController.text.isEmpty ||
+        int.parse(quotaController.text) <= 0) {
+      return false;
+    }
+    if (int.parse(quotaController.text) < participantCount) {
+      return false;
+    }
+    return true;
   }
 }

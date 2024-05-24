@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:iztechlife/pages/socialisation_pages/single_display_announcement.dart';
 
@@ -43,7 +44,9 @@ class GetData extends StatelessWidget {
             final userData = userSnapshot.data!.data() as Map<String, dynamic>;
             final userName = userData['name'];
             final userEmail = userData['email'];
+            final userPhone = userData['phone'] ?? "";
 
+            final currentUserId = FirebaseAuth.instance.currentUser!.uid;
             return Card(
               color: const Color(0xFFB71C1C),
               shape: RoundedRectangleBorder(
@@ -58,12 +61,13 @@ class GetData extends StatelessWidget {
                       builder: (context) => SingleDisplayAnnouncement(
                         user_name: userName,
                         user_email: userEmail,
-                        name: socialisationData['name'],
+                        userPhone: userPhone,
                         description: socialisationData['description'],
                         location: socialisationData['location'],
                         date: socialisationData['date'],
                         time: socialisationData['time'],
                         quota: socialisationData['quota'],
+                        documentId: documentId,
                       ),
                     ),
                   );
@@ -73,21 +77,23 @@ class GetData extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        socialisationData['name'],
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 20.0,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        "Created By: $userName",
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 16.0,
-                        ),
+                      Row(
+                        children: [
+                          Text(
+                            "Created By: $userName",
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 16.0,
+                            ),
+                          ),
+                          const Spacer(),
+                          if ((List.from(socialisationData['participants'])).contains(currentUserId))
+                            const Icon(
+                              Icons.event_available,
+                              color: Colors.yellow,
+                              size: 24.0,
+                            ),
+                        ],
                       ),
                       const SizedBox(height: 4),
                       Text(
@@ -98,6 +104,24 @@ class GetData extends StatelessWidget {
                         ),
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
+                      ),
+                      const SizedBox(height: 6),
+                      Row(
+                        children: [
+                          const Icon(
+                            Icons.people,
+                            color: Colors.white,
+                            size: 20.0,
+                          ),
+                          const SizedBox(width: 4),
+                          Text(
+                            "${(socialisationData['participants'] as List).length} / ${socialisationData['quota']}",
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 14.0,
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),

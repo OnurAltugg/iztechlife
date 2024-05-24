@@ -9,6 +9,7 @@ import 'package:iztechlife/pages/socialisation_pages/socialisation_features.dart
 import 'package:random_string/random_string.dart';
 
 import '../../service/database.dart';
+import '../main_page.dart';
 
 class CreateAnnouncement extends StatefulWidget {
   const CreateAnnouncement({super.key});
@@ -18,7 +19,6 @@ class CreateAnnouncement extends StatefulWidget {
 }
 
 class _CreateAnnouncementState extends State<CreateAnnouncement> {
-  TextEditingController nameController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
   TextEditingController locationController = TextEditingController();
   TextEditingController dateController = TextEditingController();
@@ -68,26 +68,55 @@ class _CreateAnnouncementState extends State<CreateAnnouncement> {
       appBar: AppBar(
         surfaceTintColor: Colors.transparent,
         backgroundColor: const Color(0xFFB6ABAB),
-        title: const Padding(
-          padding: EdgeInsets.only(right: 50.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                "IZTECH",
-                style: TextStyle(
-                    color: Color(0xFFB71C1C),
-                    fontSize: 30.0,
-                    fontWeight: FontWeight.bold),
+        title: GestureDetector(
+          onTap: () {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => const MainPage()),
+            );
+          },
+          child: const Padding(
+            padding: EdgeInsets.only(right: 50.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  "IZTECH",
+                  style: TextStyle(
+                      color: Color(0xFFB71C1C),
+                      fontSize: 30.0,
+                      fontWeight: FontWeight.bold),
+                ),
+                Text(
+                  "Life",
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 30.0,
+                      fontWeight: FontWeight.bold),
+                ),
+              ],
+            ),
+          ),
+        ),
+        bottom: const PreferredSize(
+          preferredSize: Size.fromHeight(50.0),
+          child: Padding(
+            padding: EdgeInsets.only(bottom: 8.0),
+            child: Text(
+              "Socialisation Service",
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 22.0,
+                fontWeight: FontWeight.bold,
+                color: Colors.black,
+                shadows: [
+                  Shadow(
+                    blurRadius: 2,
+                    offset: Offset(1, 1),
+                  ),
+                ],
               ),
-              Text(
-                "Life",
-                style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 30.0,
-                    fontWeight: FontWeight.bold),
-              )
-            ],
+            ),
           ),
         ),
       ),
@@ -98,7 +127,6 @@ class _CreateAnnouncementState extends State<CreateAnnouncement> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _buildTextField("Name", nameController),
               _buildTextField("Description", descriptionController),
               _buildTextField("Location", locationController),
               _buildDateField("Date", dateController),
@@ -111,7 +139,6 @@ class _CreateAnnouncementState extends State<CreateAnnouncement> {
                     if (_validateForm()) {
                       String id = randomAlphaNumeric(10);
                       Map<String ,dynamic> socialisationInfoMap = {
-                        "name": nameController.text,
                         "description": descriptionController.text,
                         "location": locationController.text,
                         "date": dateController.text,
@@ -119,6 +146,7 @@ class _CreateAnnouncementState extends State<CreateAnnouncement> {
                         "quota": quotaController.text,
                         "id": id,
                         "user_id": userId,
+                        "participants": []
                       };
                       await DatabaseMethods().addSocialisationDetails(socialisationInfoMap, id).then((value){
                         Fluttertoast.showToast(
@@ -302,8 +330,7 @@ class _CreateAnnouncementState extends State<CreateAnnouncement> {
   }
 
   bool _validateForm() {
-    return nameController.text.isNotEmpty &&
-        descriptionController.text.isNotEmpty &&
+    return descriptionController.text.isNotEmpty &&
         locationController.text.isNotEmpty &&
         dateController.text.isNotEmpty &&
         timeController.text.isNotEmpty &&
