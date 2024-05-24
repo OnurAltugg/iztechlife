@@ -90,7 +90,6 @@ class GetData extends StatelessWidget {
                             ),
                           ),
                           const Spacer(),
-                          const Spacer(),
                           if ((List.from(hitchhikingData['participants'])).contains(currentUserId))
                             const Icon(
                               Icons.assistant_navigation,
