@@ -80,7 +80,7 @@ class _LostPropertyFeaturesState extends State<LostPropertyFeatures> {
                 ],
               ),
             ),
-            const SizedBox(height: 30.0),
+            const SizedBox(height: 40.0),
             Container(
               margin: const EdgeInsets.only(left: 25.0, right: 25.0),
               child: ElevatedButton(
