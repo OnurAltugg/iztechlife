@@ -17,37 +17,36 @@ class _HitchhikingFeaturesState extends State<HitchhikingFeatures> {
     return Scaffold(
       backgroundColor: const Color(0xFFB6ABAB),
       appBar: AppBar(
+        surfaceTintColor: Colors.transparent,
         backgroundColor: const Color(0xFFB6ABAB),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios),
-          onPressed: () {
-            Navigator.pushAndRemoveUntil(
+        title: GestureDetector(
+          onTap: () {
+            Navigator.pushReplacement(
               context,
               MaterialPageRoute(builder: (context) => const MainPage()),
-                  (Route<dynamic> route) => false,
             );
           },
-        ),
-        title: const Padding(
-          padding: EdgeInsets.only(right: 50.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                "IZTECH",
-                style: TextStyle(
-                    color: Color(0xFFB71C1C),
-                    fontSize: 30.0,
-                    fontWeight: FontWeight.bold),
-              ),
-              Text(
-                "Life",
-                style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 30.0,
-                    fontWeight: FontWeight.bold),
-              )
-            ],
+          child: const Padding(
+            padding: EdgeInsets.only(right: 50.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  "IZTECH",
+                  style: TextStyle(
+                      color: Color(0xFFB71C1C),
+                      fontSize: 30.0,
+                      fontWeight: FontWeight.bold),
+                ),
+                Text(
+                  "Life",
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 30.0,
+                      fontWeight: FontWeight.bold),
+                ),
+              ],
+            ),
           ),
         ),
       ),

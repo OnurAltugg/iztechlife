@@ -8,6 +8,7 @@ import 'package:intl/intl.dart';
 import 'package:iztechlife/pages/hitchhiking_pages/hitchhiking_features.dart';
 import 'package:random_string/random_string.dart';
 import '../../service/database.dart';
+import '../main_page.dart';
 
 class CreateAnnouncement extends StatefulWidget {
   const CreateAnnouncement({super.key});
@@ -17,7 +18,6 @@ class CreateAnnouncement extends StatefulWidget {
 }
 
 class _CreateAnnouncementState extends State<CreateAnnouncement> {
-  TextEditingController nameController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
   TextEditingController carInfoController = TextEditingController();
   TextEditingController departureLocationController = TextEditingController();
@@ -69,26 +69,34 @@ class _CreateAnnouncementState extends State<CreateAnnouncement> {
       appBar: AppBar(
         surfaceTintColor: Colors.transparent,
         backgroundColor: const Color(0xFFB6ABAB),
-        title: const Padding(
-          padding: EdgeInsets.only(right: 50.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                "IZTECH",
-                style: TextStyle(
-                    color: Color(0xFFB71C1C),
-                    fontSize: 30.0,
-                    fontWeight: FontWeight.bold),
-              ),
-              Text(
-                "Life",
-                style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 30.0,
-                    fontWeight: FontWeight.bold),
-              ),
-            ],
+        title: GestureDetector(
+          onTap: () {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => const MainPage()),
+            );
+          },
+          child: const Padding(
+            padding: EdgeInsets.only(right: 50.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  "IZTECH",
+                  style: TextStyle(
+                      color: Color(0xFFB71C1C),
+                      fontSize: 30.0,
+                      fontWeight: FontWeight.bold),
+                ),
+                Text(
+                  "Life",
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 30.0,
+                      fontWeight: FontWeight.bold),
+                ),
+              ],
+            ),
           ),
         ),
         bottom: const PreferredSize(
@@ -120,7 +128,6 @@ class _CreateAnnouncementState extends State<CreateAnnouncement> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _buildTextField("Name", nameController),
               _buildTextField("Description", descriptionController),
               _buildTextField("Car Info", carInfoController),
               _buildTextField("Departure Location", departureLocationController),
@@ -135,7 +142,6 @@ class _CreateAnnouncementState extends State<CreateAnnouncement> {
                     if (_validateForm()) {
                       String id = randomAlphaNumeric(10);
                       Map<String ,dynamic> hitchhikingInfoMap = {
-                        "name": nameController.text,
                         "description": descriptionController.text,
                         "car_info": carInfoController.text,
                         "departure": departureLocationController.text,

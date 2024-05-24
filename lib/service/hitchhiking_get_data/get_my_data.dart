@@ -16,7 +16,6 @@ class GetMyData extends StatelessWidget {
   GetMyData({super.key, required this.documentId, required this.onDelete});
   final hourFormat = DateFormat("HH:mm");
   final dateFormat = DateFormat("dd-MM-yyyy");
-  TextEditingController nameController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
   TextEditingController carInfoController = TextEditingController();
   TextEditingController departureLocationController = TextEditingController();
@@ -64,7 +63,7 @@ class GetMyData extends StatelessWidget {
                                     text: TextSpan(
                                       children: [
                                         const TextSpan(
-                                          text: "Name: ",
+                                          text: "Date: ",
                                           style: TextStyle(
                                             color: Colors.white,
                                             fontSize: 18.0,
@@ -72,7 +71,7 @@ class GetMyData extends StatelessWidget {
                                           ),
                                         ),
                                         TextSpan(
-                                          text: "${data['name']}",
+                                          text: "${data['date']}",
                                           style: const TextStyle(
                                             color: Colors.white,
                                             fontSize: 18.0,
@@ -84,7 +83,6 @@ class GetMyData extends StatelessWidget {
                                 ),
                                 GestureDetector(
                                   onTap: () {
-                                    nameController.text = data['name'];
                                     descriptionController.text = data['description'];
                                     carInfoController.text = data['car_info'];
                                     departureLocationController.text = data['departure'];
@@ -104,6 +102,28 @@ class GetMyData extends StatelessWidget {
                                   child: const Icon(Icons.delete, color: Colors.white),
                                 )
                               ],
+                            ),
+                            const SizedBox(height: 3.0),
+                            Text.rich(
+                              TextSpan(
+                                children: [
+                                  const TextSpan(
+                                    text: "Time: ",
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 18.0,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  TextSpan(
+                                    text: "${data['time']}",
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 18.0,
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
                             const SizedBox(height: 3.0),
                             Text.rich(
@@ -141,50 +161,6 @@ class GetMyData extends StatelessWidget {
                                   ),
                                   TextSpan(
                                     text: "${data['car_info']}",
-                                    style: const TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 18.0,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            const SizedBox(height: 3.0),
-                            Text.rich(
-                              TextSpan(
-                                children: [
-                                  const TextSpan(
-                                    text: "Date: ",
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 18.0,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  TextSpan(
-                                    text: "${data['date']}",
-                                    style: const TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 18.0,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            const SizedBox(height: 3.0),
-                            Text.rich(
-                              TextSpan(
-                                children: [
-                                  const TextSpan(
-                                    text: "Time: ",
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 18.0,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  TextSpan(
-                                    text: "${data['time']}",
                                     style: const TextStyle(
                                       color: Colors.white,
                                       fontSize: 18.0,
@@ -265,7 +241,7 @@ class GetMyData extends StatelessWidget {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) => ViewJoinRequestsPage(participants: participants),
+                                    builder: (context) => ViewJoinRequestsPage(participants: participants, documentId: documentId),
                                   ),
                                 );
                               },
@@ -313,7 +289,6 @@ class GetMyData extends StatelessWidget {
                 ),
               ],
             ),
-            _buildTextField("Name", nameController),
             _buildTextField("Description", descriptionController),
             _buildTextField("Car Info", carInfoController),
             _buildTextField("Departure Location", departureLocationController),
@@ -326,7 +301,6 @@ class GetMyData extends StatelessWidget {
                     onPressed: () async {
                       if (_validateForm()) {
                         Map<String, dynamic> updateInfoMap = {
-                          "name": nameController.text,
                           "description": descriptionController.text,
                           "car_info": carInfoController.text,
                           "departure": departureLocationController.text,
@@ -511,8 +485,7 @@ class GetMyData extends StatelessWidget {
   }
 
   bool _validateForm() {
-    return nameController.text.isNotEmpty &&
-        descriptionController.text.isNotEmpty &&
+    return descriptionController.text.isNotEmpty &&
         carInfoController.text.isNotEmpty &&
         departureLocationController.text.isNotEmpty &&
         destinationLocationController.text.isNotEmpty &&

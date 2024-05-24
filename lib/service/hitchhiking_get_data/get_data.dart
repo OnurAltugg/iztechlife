@@ -58,7 +58,6 @@ class GetData extends StatelessWidget {
                       builder: (context) => SingleDisplayAnnouncement(
                         user_name: userName,
                         user_email: userEmail,
-                        name: hitchhikingData['name'],
                         description: hitchhikingData['description'],
                         car_info: hitchhikingData['car_info'],
                         date: hitchhikingData['date'],
@@ -76,15 +75,6 @@ class GetData extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        hitchhikingData['name'],
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 20.0,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      const SizedBox(height: 8),
                       Text(
                         "Created By: $userName",
                         style: const TextStyle(
