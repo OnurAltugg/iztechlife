@@ -21,7 +21,6 @@ class _GetMyDataState extends State<GetMyData> {
   final dateFormat = DateFormat("dd-MM-yyyy");
   DateTime? startDate;
   DateTime? endDate;
-  TextEditingController nameController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
   TextEditingController placeController = TextEditingController();
   TextEditingController priceController = TextEditingController();
@@ -30,7 +29,6 @@ class _GetMyDataState extends State<GetMyData> {
 
   @override
   void dispose() {
-    nameController.dispose();
     descriptionController.dispose();
     placeController.dispose();
     priceController.dispose();
@@ -72,7 +70,7 @@ class _GetMyDataState extends State<GetMyData> {
                                     text: TextSpan(
                                       children: [
                                         const TextSpan(
-                                          text: "Name: ",
+                                          text: "Start Date: ",
                                           style: TextStyle(
                                             color: Colors.white,
                                             fontSize: 18.0,
@@ -80,7 +78,7 @@ class _GetMyDataState extends State<GetMyData> {
                                           ),
                                         ),
                                         TextSpan(
-                                          text: "${data['name']}",
+                                          text: "${data['start_date']}",
                                           style: const TextStyle(
                                             color: Colors.white,
                                             fontSize: 18.0,
@@ -92,7 +90,6 @@ class _GetMyDataState extends State<GetMyData> {
                                 ),
                                 GestureDetector(
                                   onTap: () {
-                                    nameController.text = data['name'];
                                     descriptionController.text = data['description'];
                                     placeController.text = data['place'];
                                     priceController.text = data['price'];
@@ -108,6 +105,28 @@ class _GetMyDataState extends State<GetMyData> {
                                   child: const Icon(Icons.delete, color: Colors.white),
                                 )
                               ],
+                            ),
+                            const SizedBox(height: 3.0),
+                            Text.rich(
+                              TextSpan(
+                                children: [
+                                  const TextSpan(
+                                    text: "End Date: ",
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 18.0,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  TextSpan(
+                                    text: "${data['end_date']}",
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 18.0,
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
                             const SizedBox(height: 3.0),
                             Text.rich(
@@ -175,50 +194,6 @@ class _GetMyDataState extends State<GetMyData> {
                                 ],
                               ),
                             ),
-                            const SizedBox(height: 3.0),
-                            Text.rich(
-                              TextSpan(
-                                children: [
-                                  const TextSpan(
-                                    text: "Start Date: ",
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 18.0,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  TextSpan(
-                                    text: "${data['start_date']}",
-                                    style: const TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 18.0,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            const SizedBox(height: 3.0),
-                            Text.rich(
-                              TextSpan(
-                                children: [
-                                  const TextSpan(
-                                    text: "End Date: ",
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 18.0,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  TextSpan(
-                                    text: "${data['end_date']}",
-                                    style: const TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 18.0,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
                           ],
                         ),
                       ),
@@ -254,7 +229,6 @@ class _GetMyDataState extends State<GetMyData> {
                 ),
               ],
             ),
-            _buildTextField("Name", nameController),
             _buildTextField("Description", descriptionController),
             _buildTextField("Place", placeController),
             _buildTextField("Price", priceController),
@@ -265,7 +239,6 @@ class _GetMyDataState extends State<GetMyData> {
                     onPressed: () async {
                       if (_validateForm()) {
                         Map<String, dynamic> updateInfoMap = {
-                          "name": nameController.text,
                           "description": descriptionController.text,
                           "place": placeController.text,
                           "price": priceController.text,
@@ -420,8 +393,7 @@ class _GetMyDataState extends State<GetMyData> {
   }
 
   bool _validateForm() {
-    return nameController.text.isNotEmpty &&
-        descriptionController.text.isNotEmpty &&
+    return descriptionController.text.isNotEmpty &&
         placeController.text.isNotEmpty &&
         priceController.text.isNotEmpty &&
         startDateController.text.isNotEmpty &&

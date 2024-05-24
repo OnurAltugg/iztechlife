@@ -43,6 +43,7 @@ class GetData extends StatelessWidget {
             final userData = userSnapshot.data!.data() as Map<String, dynamic>;
             final userName = userData['name'];
             final userEmail = userData['email'];
+            final userPhone = userData['phone'] ?? "";
 
             return Card(
               color: const Color(0xFFB71C1C),
@@ -56,14 +57,14 @@ class GetData extends StatelessWidget {
                   Navigator.of(context).push(
                     MaterialPageRoute(
                       builder: (context) => SingleDisplayAnnouncement(
-                        user_name: userName,
-                        user_email: userEmail,
-                        name: accommodationData['name'],
+                        userName: userName,
+                        userEmail: userEmail,
+                        userPhone: userPhone,
                         description: accommodationData['description'],
                         place: accommodationData['place'],
                         price: accommodationData['price'],
-                        start_date: accommodationData['start_date'],
-                        end_date: accommodationData['end_date'],
+                        startDate: accommodationData['start_date'],
+                        endDate: accommodationData['end_date'],
                       ),
                     ),
                   );
@@ -73,15 +74,6 @@ class GetData extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        accommodationData['name'],
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 20.0,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      const SizedBox(height: 8),
                       Text(
                         "Created By: $userName",
                         style: const TextStyle(
