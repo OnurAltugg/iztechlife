@@ -5,7 +5,7 @@ import 'package:iztechlife/pages/hitchhiking_pages/my_announcements.dart';
 import '../main_page.dart';
 
 class HitchhikingFeatures extends StatefulWidget {
-  const HitchhikingFeatures({Key? key}) : super(key: key);
+  const HitchhikingFeatures({super.key});
 
   @override
   State<HitchhikingFeatures> createState() => _HitchhikingFeaturesState();

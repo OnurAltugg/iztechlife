@@ -5,15 +5,15 @@ import 'package:flutter/material.dart';
 import '../main_page.dart';
 
 class SingleDisplayAnnouncement extends StatelessWidget {
-  final String user_name, user_email, userPhone, description, car_info, date, time, departure, destination, quota, documentId;
+  final String userName, userEmail, userPhone, description, carInfo, date, time, departure, destination, quota, documentId;
 
   const SingleDisplayAnnouncement({
     super.key,
-    required this.user_name,
-    required this.user_email,
+    required this.userName,
+    required this.userEmail,
     required this.userPhone,
     required this.description,
-    required this.car_info,
+    required this.carInfo,
     required this.date,
     required this.time,
     required this.departure,
@@ -26,7 +26,7 @@ class SingleDisplayAnnouncement extends StatelessWidget {
   Widget build(BuildContext context) {
     bool isUserAnnouncement = false;
     final user = FirebaseAuth.instance.currentUser!;
-    if(user.email == user_email){
+    if(user.email == userEmail){
       isUserAnnouncement = true;
     }
     return Scaffold(
@@ -73,7 +73,7 @@ class SingleDisplayAnnouncement extends StatelessWidget {
             children: [
               _buildText("Description", description),
               const SizedBox(height: 15.0),
-              _buildText("Car Info", car_info),
+              _buildText("Car Info", carInfo),
               const SizedBox(height: 15.0),
               _buildText("Date", date),
               const SizedBox(height: 15.0),
@@ -85,9 +85,9 @@ class SingleDisplayAnnouncement extends StatelessWidget {
               const SizedBox(height: 15.0),
               _buildText("Quota", quota),
               const SizedBox(height: 15.0),
-              _buildText("Created By", user_name),
+              _buildText("Created By", userName),
               const SizedBox(height: 15.0),
-              _buildText("Email", user_email),
+              _buildText("Email", userEmail),
               const SizedBox(height: 15.0),
               if(userPhone != "")
                 _buildText("Phone", userPhone),
