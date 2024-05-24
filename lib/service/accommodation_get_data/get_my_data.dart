@@ -327,6 +327,8 @@ class _GetMyDataState extends State<GetMyData> {
             style: const TextStyle(color: Colors.black),
             decoration: const InputDecoration(border: InputBorder.none),
             cursorColor: const Color(0xFFB71C1C),
+            keyboardType: TextInputType.multiline,
+            maxLines: null,
           ),
         ),
         const SizedBox(height: 15.0),

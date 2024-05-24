@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:iztechlife/pages/lost_property_pages/single_display_announcement.dart';
+import '../../pages/lost_property_pages/full_screen_image.dart';
 
 class GetData extends StatelessWidget {
   final String documentId;
@@ -78,7 +79,8 @@ class GetData extends StatelessWidget {
                         "Created By: $userName",
                         style: const TextStyle(
                           color: Colors.white,
-                          fontSize: 16.0,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 18.0,
                         ),
                       ),
                       const SizedBox(height: 4),
@@ -86,11 +88,13 @@ class GetData extends StatelessWidget {
                         lostPropertyData['description'],
                         style: const TextStyle(
                           color: Colors.white,
-                          fontSize: 14.0,
+                          fontSize: 16.0,
                         ),
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                       ),
+                      const SizedBox(height: 4),
+                      _buildPhoto(context, lostPropertyData['image_url']),
                     ],
                   ),
                 ),
@@ -99,6 +103,47 @@ class GetData extends StatelessWidget {
           },
         );
       },
+    );
+  }
+
+  Widget _buildPhoto(BuildContext context, String imageUrl) {
+    return Center(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 6.0, horizontal: 10.0),
+          child: InkWell(
+            onTap: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => FullScreenImage(imageUrl: imageUrl),
+                ),
+              );
+            },
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(8.0),
+              child: Image.network(
+                imageUrl,
+                fit: BoxFit.cover,
+                width: 75,
+                height: 75,
+                loadingBuilder: (context, child, loadingProgress) {
+                  if (loadingProgress == null) {
+                    return child;
+                  } else {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  }
+                },
+                errorBuilder: (context, error, stackTrace) {
+                  return const Icon(
+                    Icons.error,
+                    color: Colors.red,
+                  );
+                },
+              ),
+            ),
+          ),
+        )
     );
   }
 }

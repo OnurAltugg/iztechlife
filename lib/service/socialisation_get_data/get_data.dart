@@ -83,7 +83,8 @@ class GetData extends StatelessWidget {
                             "Created By: $userName",
                             style: const TextStyle(
                               color: Colors.white,
-                              fontSize: 16.0,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18.0,
                             ),
                           ),
                           const Spacer(),
@@ -100,7 +101,7 @@ class GetData extends StatelessWidget {
                         socialisationData['description'],
                         style: const TextStyle(
                           color: Colors.white,
-                          fontSize: 14.0,
+                          fontSize: 16.0,
                         ),
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
@@ -111,14 +112,14 @@ class GetData extends StatelessWidget {
                           const Icon(
                             Icons.people,
                             color: Colors.white,
-                            size: 20.0,
+                            size: 24.0,
                           ),
                           const SizedBox(width: 4),
                           Text(
                             "${(socialisationData['participants'] as List).length} / ${socialisationData['quota']}",
                             style: const TextStyle(
                               color: Colors.white,
-                              fontSize: 14.0,
+                              fontSize: 16.0,
                             ),
                           ),
                         ],

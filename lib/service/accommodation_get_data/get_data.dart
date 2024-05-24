@@ -86,7 +86,8 @@ class GetData extends StatelessWidget {
                         "Created By: $userName",
                         style: const TextStyle(
                           color: Colors.white,
-                          fontSize: 16.0,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 18.0,
                         ),
                       ),
                       const SizedBox(height: 4),
@@ -94,7 +95,7 @@ class GetData extends StatelessWidget {
                         accommodationData['description'],
                         style: const TextStyle(
                           color: Colors.white,
-                          fontSize: 14.0,
+                          fontSize: 16.0,
                         ),
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
