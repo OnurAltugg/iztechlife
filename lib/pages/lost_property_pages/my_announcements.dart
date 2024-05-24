@@ -3,6 +3,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:iztechlife/service/lost_property_get_data/get_my_data.dart';
 
+import '../main_page.dart';
+
 class MyAnnouncements extends StatefulWidget {
   const MyAnnouncements({super.key});
 
@@ -65,26 +67,55 @@ class _MyAnnouncementsState extends State<MyAnnouncements> {
           appBar: AppBar(
             surfaceTintColor: Colors.transparent,
             backgroundColor: const Color(0xFFB6ABAB),
-            title: const Padding(
-              padding: EdgeInsets.only(right: 50.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    "IZTECH",
-                    style: TextStyle(
-                        color: Color(0xFFB71C1C),
-                        fontSize: 30.0,
-                        fontWeight: FontWeight.bold),
+            title: GestureDetector(
+              onTap: () {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => const MainPage()),
+                );
+              },
+              child: const Padding(
+                padding: EdgeInsets.only(right: 50.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      "IZTECH",
+                      style: TextStyle(
+                          color: Color(0xFFB71C1C),
+                          fontSize: 30.0,
+                          fontWeight: FontWeight.bold),
+                    ),
+                    Text(
+                      "Life",
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 30.0,
+                          fontWeight: FontWeight.bold),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            bottom: const PreferredSize(
+              preferredSize: Size.fromHeight(50.0),
+              child: Padding(
+                padding: EdgeInsets.only(bottom: 8.0),
+                child: Text(
+                  "Lost Property Service",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 22.0,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                    shadows: [
+                      Shadow(
+                        blurRadius: 2,
+                        offset: Offset(1, 1),
+                      ),
+                    ],
                   ),
-                  Text(
-                    "Life",
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 30.0,
-                        fontWeight: FontWeight.bold),
-                  )
-                ],
+                ),
               ),
             ),
           ),

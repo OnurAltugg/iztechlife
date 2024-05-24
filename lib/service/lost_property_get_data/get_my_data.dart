@@ -25,7 +25,6 @@ class _GetMyDataState extends State<GetMyData> {
   final user = FirebaseAuth.instance.currentUser!;
   final hourFormat = DateFormat("HH:mm");
   final dateFormat = DateFormat("dd-MM-yyyy");
-  TextEditingController nameController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
   TextEditingController locationController = TextEditingController();
   TextEditingController dateController = TextEditingController();
@@ -69,7 +68,7 @@ class _GetMyDataState extends State<GetMyData> {
                                     text: TextSpan(
                                       children: [
                                         const TextSpan(
-                                          text: "Name: ",
+                                          text: "Date: ",
                                           style: TextStyle(
                                             color: Colors.white,
                                             fontSize: 18.0,
@@ -77,7 +76,7 @@ class _GetMyDataState extends State<GetMyData> {
                                           ),
                                         ),
                                         TextSpan(
-                                          text: "${data['name']}",
+                                          text: "${data['date']}",
                                           style: const TextStyle(
                                             color: Colors.white,
                                             fontSize: 18.0,
@@ -89,7 +88,6 @@ class _GetMyDataState extends State<GetMyData> {
                                 ),
                                 GestureDetector(
                                   onTap: () {
-                                    nameController.text = data['name'];
                                     descriptionController.text = data['description'];
                                     locationController.text = data['location'];
                                     dateController.text = data['date'];
@@ -111,6 +109,28 @@ class _GetMyDataState extends State<GetMyData> {
                                   child: const Icon(Icons.delete, color: Colors.white),
                                 )
                               ],
+                            ),
+                            const SizedBox(height: 3.0),
+                            Text.rich(
+                              TextSpan(
+                                children: [
+                                  const TextSpan(
+                                    text: "Time: ",
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 18.0,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  TextSpan(
+                                    text: "${data['time']}",
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 18.0,
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
                             const SizedBox(height: 3.0),
                             Text.rich(
@@ -156,50 +176,6 @@ class _GetMyDataState extends State<GetMyData> {
                                 ],
                               ),
                             ),
-                            const SizedBox(height: 3.0),
-                            Text.rich(
-                              TextSpan(
-                                children: [
-                                  const TextSpan(
-                                    text: "Date: ",
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 18.0,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  TextSpan(
-                                    text: "${data['date']}",
-                                    style: const TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 18.0,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            const SizedBox(height: 3.0),
-                            Text.rich(
-                              TextSpan(
-                                children: [
-                                  const TextSpan(
-                                    text: "Time: ",
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 18.0,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  TextSpan(
-                                    text: "${data['time']}",
-                                    style: const TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 18.0,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
                             const SizedBox(height: 15.0),
                             GestureDetector(
                               onTap: () {
@@ -212,7 +188,9 @@ class _GetMyDataState extends State<GetMyData> {
                               },
                               child: Image.network(
                                 data['image_url'],
+                                fit: BoxFit.cover,
                                 width: 400,
+                                height: 300,
                                 loadingBuilder: (context, child, loadingProgress) {
                                   if (loadingProgress == null) {
                                     return child;
@@ -271,7 +249,6 @@ class _GetMyDataState extends State<GetMyData> {
                   const SizedBox(width: 60.0),
                 ],
               ),
-              _buildTextField("Name", nameController),
               _buildTextField("Description", descriptionController),
               _buildTextField("Location", locationController),
               _buildDateField("Date", dateController),
@@ -282,7 +259,6 @@ class _GetMyDataState extends State<GetMyData> {
                   onPressed: () async {
                     if (_validateForm()) {
                       Map<String, dynamic> updateInfoMap = {
-                        "name": nameController.text,
                         "description": descriptionController.text,
                         "location": locationController.text,
                         "date": dateController.text,
@@ -532,8 +508,7 @@ class _GetMyDataState extends State<GetMyData> {
   }
 
   bool _validateForm() {
-    return nameController.text.isNotEmpty &&
-        descriptionController.text.isNotEmpty &&
+    return descriptionController.text.isNotEmpty &&
         locationController.text.isNotEmpty &&
         dateController.text.isNotEmpty &&
         timeController.text.isNotEmpty &&

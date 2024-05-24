@@ -1,20 +1,21 @@
 import 'package:flutter/material.dart';
 
+import '../main_page.dart';
 import 'full_screen_image.dart';
 
 class SingleDisplayAnnouncement extends StatelessWidget {
-  final String user_name, user_email, name, description, location, date, time, image_url;
+  final String userName, userEmail, userPhone, description, location, date, time, imageUrl;
 
   const SingleDisplayAnnouncement({
     super.key,
-    required this.user_name,
-    required this.user_email,
-    required this.name,
+    required this.userName,
+    required this.userEmail,
+    required this.userPhone,
     required this.description,
     required this.location,
     required this.date,
     required this.time,
-    required this.image_url,
+    required this.imageUrl,
   });
 
   @override
@@ -24,26 +25,55 @@ class SingleDisplayAnnouncement extends StatelessWidget {
       appBar: AppBar(
         surfaceTintColor: Colors.transparent,
         backgroundColor: const Color(0xFFB6ABAB),
-        title: const Padding(
-          padding: EdgeInsets.only(right: 50.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                "IZTECH",
-                style: TextStyle(
-                    color: Color(0xFFB71C1C),
-                    fontSize: 30.0,
-                    fontWeight: FontWeight.bold),
+        title: GestureDetector(
+          onTap: () {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => const MainPage()),
+            );
+          },
+          child: const Padding(
+            padding: EdgeInsets.only(right: 50.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  "IZTECH",
+                  style: TextStyle(
+                      color: Color(0xFFB71C1C),
+                      fontSize: 30.0,
+                      fontWeight: FontWeight.bold),
+                ),
+                Text(
+                  "Life",
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 30.0,
+                      fontWeight: FontWeight.bold),
+                ),
+              ],
+            ),
+          ),
+        ),
+        bottom: const PreferredSize(
+          preferredSize: Size.fromHeight(50.0),
+          child: Padding(
+            padding: EdgeInsets.only(bottom: 8.0),
+            child: Text(
+              "Lost Property Service",
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 22.0,
+                fontWeight: FontWeight.bold,
+                color: Colors.black,
+                shadows: [
+                  Shadow(
+                    blurRadius: 2,
+                    offset: Offset(1, 1),
+                  ),
+                ],
               ),
-              Text(
-                "Life",
-                style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 30.0,
-                    fontWeight: FontWeight.bold),
-              )
-            ],
+            ),
           ),
         ),
       ),
@@ -53,8 +83,6 @@ class SingleDisplayAnnouncement extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _buildText("Name", name),
-              const SizedBox(height: 15.0),
               _buildText("Description", description),
               const SizedBox(height: 15.0),
               _buildText("Location", location),
@@ -63,11 +91,14 @@ class SingleDisplayAnnouncement extends StatelessWidget {
               const SizedBox(height: 15.0),
               _buildText("Time", time),
               const SizedBox(height: 15.0),
-              _buildPhoto(context, "Photo", image_url),
+              _buildPhoto(context, "Photo", imageUrl),
               const SizedBox(height: 15.0),
-              _buildText("Created By", user_name),
+              _buildText("Created By", userName),
               const SizedBox(height: 15.0),
-              _buildText("Email", user_email),
+              _buildText("Email", userEmail),
+              const SizedBox(height: 15.0),
+              if(userPhone != "")
+                _buildText("Phone", userPhone),
             ],
           ),
         ),
@@ -125,6 +156,8 @@ class SingleDisplayAnnouncement extends StatelessWidget {
             child: Image.network(
               imageUrl,
               fit: BoxFit.cover,
+              width: 400,
+              height: 400,
               loadingBuilder: (context, child, loadingProgress) {
                 if (loadingProgress == null) {
                   return child;
