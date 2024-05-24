@@ -19,6 +19,16 @@ class _HitchhikingFeaturesState extends State<HitchhikingFeatures> {
       appBar: AppBar(
         surfaceTintColor: Colors.transparent,
         backgroundColor: const Color(0xFFB6ABAB),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios),
+          onPressed: () {
+            Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(builder: (context) => const MainPage()),
+                  (Route<dynamic> route) => false,
+            );
+          },
+        ),
         title: GestureDetector(
           onTap: () {
             Navigator.pushReplacement(
