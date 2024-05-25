@@ -1,12 +1,17 @@
+import 'dart:typed_data';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:crypto/crypto.dart';
 import 'package:datetime_picker_formfield_new/datetime_picker_formfield.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:iztechlife/pages/accommodation_pages/accommodation_features.dart';
 import 'package:random_string/random_string.dart';
 import '../../service/database.dart';
+import '../../service/storage.dart';
 import '../main_page.dart';
 
 class CreateAnnouncement extends StatefulWidget {
@@ -24,6 +29,7 @@ class _CreateAnnouncementState extends State<CreateAnnouncement> {
   TextEditingController endDateController = TextEditingController();
 
   final dateFormat = DateFormat("dd-MM-yyyy");
+  final StorageMethods _storage = StorageMethods();
   DateTime? startDate;
   DateTime? endDate;
 
@@ -31,6 +37,11 @@ class _CreateAnnouncementState extends State<CreateAnnouncement> {
   String userName = "";
   String userEmail = "";
   String userId = "";
+
+  final List<Uint8List> _images = [];
+  final List<String> _imageHashes = [];
+
+  bool isLoading = false;
 
   @override
   void initState() {
@@ -125,22 +136,39 @@ class _CreateAnnouncementState extends State<CreateAnnouncement> {
               _buildTextField("Price", priceController),
               _buildDateField("Start Date", true, startDateController),
               _buildDateField("End Date", false, endDateController),
+              _buildPhotoField(),
               const SizedBox(height: 15.0),
               Center(
-                child: ElevatedButton(
+                child: isLoading
+                  ? const CircularProgressIndicator()
+                : ElevatedButton(
                   onPressed: () async {
                     if (_validateForm()) {
-                      String id = randomAlphaNumeric(10);
-                      Map<String ,dynamic> accommodationInfoMap = {
-                        "description": descriptionController.text,
-                        "place": placeController.text,
-                        "price": priceController.text,
-                        "start_date": startDateController.text,
-                        "end_date": endDateController.text,
-                        "id": id,
-                        "user_id": userId,
-                      };
-                      await DatabaseMethods().addFindHouseDetails(accommodationInfoMap, id).then((value){
+                      setState(() {
+                        isLoading = true;
+                      });
+                      try {
+                        String id = randomAlphaNumeric(10);
+                        List<String> imageUrls = [];
+                        List<Future<String>> uploadFutures = _images.map((image) {
+                          String uniqueImageId = randomAlphaNumeric(10);
+                          return _storage.uploadImageToStorage("accommodation/$id/$uniqueImageId", image);
+                        }).toList();
+                        imageUrls = await Future.wait(uploadFutures);
+
+                        Map<String, dynamic> accommodationInfoMap = {
+                          "description": descriptionController.text,
+                          "place": placeController.text,
+                          "start_date": startDateController.text,
+                          "price": priceController.text,
+                          "end_date": endDateController.text,
+                          "id": id,
+                          "user_id": userId,
+                          "image_urls": imageUrls
+                        };
+
+                        await DatabaseMethods().addFindHouseDetails(accommodationInfoMap, id);
+
                         Fluttertoast.showToast(
                             msg: "Accommodation details added successfully.",
                             toastLength: Toast.LENGTH_SHORT,
@@ -150,12 +178,27 @@ class _CreateAnnouncementState extends State<CreateAnnouncement> {
                             textColor: Colors.white,
                             fontSize: 16.0
                         );
-                      });
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => const AccommodationFeatures()),
-                      );
-                    }else {
+
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => const AccommodationFeatures()),
+                        );
+                      } catch (e) {
+                        Fluttertoast.showToast(
+                            msg: "An error occurred. Please try again.",
+                            toastLength: Toast.LENGTH_SHORT,
+                            gravity: ToastGravity.CENTER,
+                            timeInSecForIosWeb: 1,
+                            backgroundColor: Colors.red,
+                            textColor: Colors.white,
+                            fontSize: 16.0
+                        );
+                      } finally {
+                        setState(() {
+                          isLoading = false;
+                        });
+                      }
+                    } else {
                       Fluttertoast.showToast(
                           msg: "Please fill all fields",
                           toastLength: Toast.LENGTH_SHORT,
@@ -297,11 +340,113 @@ class _CreateAnnouncementState extends State<CreateAnnouncement> {
     );
   }
 
+  Widget _buildPhotoField() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          "Photo",
+          style: TextStyle(
+              color: Colors.black, fontSize: 24.0, fontWeight: FontWeight.bold),
+        ),
+        const SizedBox(height: 3.0),
+        Row(
+          children: [
+            FloatingActionButton(
+              onPressed: selectImage,
+              backgroundColor: const Color(0xFFB71C1C),
+              child: const Icon(Icons.upload, color: Colors.white,),
+            ),
+            const SizedBox(width: 20.0),
+            Expanded(
+              child: SizedBox(
+                height: 100,
+                child: ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: _images.length,
+                  itemBuilder: (context, index) {
+                    return Stack(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(10.0),
+                            child: Image.memory(
+                              _images[index],
+                              width: 100,
+                              height: 100,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                        ),
+                        Positioned(
+                          top: 5,
+                          right: 5,
+                          child: GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                _images.removeAt(index);
+                                _imageHashes.removeAt(index);
+                              });
+                            },
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: Colors.red.withOpacity(0.7),
+                                shape: BoxShape.circle,
+                              ),
+                              child: const Padding(
+                                padding: EdgeInsets.all(5.0),
+                                child: Icon(
+                                  Icons.close,
+                                  color: Colors.white,
+                                  size: 16,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    );
+                  },
+                ),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 15.0),
+      ],
+    );
+  }
+
+  void selectImage() async {
+    Uint8List? img = await _storage.pickImage(ImageSource.gallery);
+    if (img != null) {
+      String imgHash = sha256.convert(img).toString();
+      if (_imageHashes.contains(imgHash)) {
+        Fluttertoast.showToast(
+            msg: "This image has already been added.",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.CENTER,
+            timeInSecForIosWeb: 1,
+            backgroundColor: Colors.red,
+            textColor: Colors.white,
+            fontSize: 16.0
+        );
+      } else {
+        setState(() {
+          _images.add(img);
+          _imageHashes.add(imgHash);
+        });
+      }
+    }
+  }
+
   bool _validateForm() {
     return descriptionController.text.isNotEmpty &&
         placeController.text.isNotEmpty &&
         priceController.text.isNotEmpty &&
         startDateController.text.isNotEmpty &&
-        endDateController.text.isNotEmpty;
+        endDateController.text.isNotEmpty &&
+        _images.isNotEmpty;
   }
 }

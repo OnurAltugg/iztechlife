@@ -65,6 +65,7 @@ class GetData extends StatelessWidget {
                         price: accommodationData['price'],
                         startDate: accommodationData['start_date'],
                         endDate: accommodationData['end_date'],
+                        imageUrls: List<String>.from(accommodationData['image_urls']),
                       ),
                     ),
                   );
