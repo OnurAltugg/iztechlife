@@ -1,12 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import '../../pages/main_page.dart';
 
-class ViewJoinRequestsPage extends StatelessWidget {
+class ViewJoinRequestsPage extends StatefulWidget {
   final List<String> participants;
   final String documentId;
 
   const ViewJoinRequestsPage({super.key, required this.participants, required this.documentId});
+
+  @override
+  _ViewJoinRequestsPageState createState() => _ViewJoinRequestsPageState();
+}
+
+class _ViewJoinRequestsPageState extends State<ViewJoinRequestsPage> {
+  late List<String> participants;
+
+  @override
+  void initState() {
+    super.initState();
+    participants = List.from(widget.participants);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -166,10 +180,22 @@ class ViewJoinRequestsPage extends StatelessWidget {
                                 ),
                               );
                               if (confirm) {
-                                await FirebaseFirestore.instance.collection('hitchhiking').doc(documentId)
+                                await FirebaseFirestore.instance.collection('hitchhiking').doc(widget.documentId)
                                     .update({
                                   'participants': FieldValue.arrayRemove([userId])
                                 });
+                                setState(() {
+                                  participants.remove(userId);
+                                });
+                                Fluttertoast.showToast(
+                                    msg: "User request successfully removed.",
+                                    toastLength: Toast.LENGTH_SHORT,
+                                    gravity: ToastGravity.BOTTOM,
+                                    timeInSecForIosWeb: 1,
+                                    backgroundColor: Colors.green,
+                                    textColor: Colors.white,
+                                    fontSize: 16.0
+                                );
                               }
                             },
                           ),

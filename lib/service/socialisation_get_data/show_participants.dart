@@ -1,12 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import '../../pages/main_page.dart';
 
-class ShowParticipantsPage extends StatelessWidget {
+class ShowParticipantsPage extends StatefulWidget {
   final List<String> participants;
   final String documentId;
 
   const ShowParticipantsPage({super.key, required this.participants, required this.documentId});
+
+  @override
+  _ShowParticipantsPageState createState() => _ShowParticipantsPageState();
+}
+
+class _ShowParticipantsPageState extends State<ShowParticipantsPage> {
+  late List<String> participants;
+
+  @override
+  void initState() {
+    super.initState();
+    participants = List.from(widget.participants);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -166,10 +180,22 @@ class ShowParticipantsPage extends StatelessWidget {
                                 ),
                               );
                               if (confirm) {
-                                await FirebaseFirestore.instance.collection('socialisation').doc(documentId)
+                                await FirebaseFirestore.instance.collection('socialisation').doc(widget.documentId)
                                     .update({
                                   'participants': FieldValue.arrayRemove([userId])
                                 });
+                                setState(() {
+                                  participants.remove(userId);
+                                });
+                                Fluttertoast.showToast(
+                                    msg: "User successfully removed from event.",
+                                    toastLength: Toast.LENGTH_SHORT,
+                                    gravity: ToastGravity.BOTTOM,
+                                    timeInSecForIosWeb: 1,
+                                    backgroundColor: Colors.green,
+                                    textColor: Colors.white,
+                                    fontSize: 16.0
+                                );
                               }
                             },
                           ),
