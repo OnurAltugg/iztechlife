@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:iztechlife/service/socialisation_get_data/get_data.dart';
 
@@ -12,12 +13,26 @@ class DisplayAnnouncements extends StatefulWidget {
 }
 
 class _DisplayAnnouncementsState extends State<DisplayAnnouncements> {
-  List<String> docIds = [];
+  List<String> userParticipatedDocIds = [];
+  List<String> otherDocIds = [];
+  String currentUserId = FirebaseAuth.instance.currentUser!.uid;
 
   Future<void> getDocID() async {
     final documents = await FirebaseFirestore.instance.collection('socialisation').get();
+    List<String> participated = [];
+    List<String> notParticipated = [];
+
+    for (var doc in documents.docs) {
+      if ((doc.data()['participants'] as List).contains(currentUserId)) {
+        participated.add(doc.id);
+      } else {
+        notParticipated.add(doc.id);
+      }
+    }
+
     setState(() {
-      docIds = documents.docs.map((doc) => doc.id).toList();
+      userParticipatedDocIds = participated;
+      otherDocIds = notParticipated;
     });
   }
 
@@ -92,11 +107,18 @@ class _DisplayAnnouncementsState extends State<DisplayAnnouncements> {
             ListView.builder(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
-              itemCount: docIds.length,
+              itemCount: userParticipatedDocIds.length + otherDocIds.length,
               itemBuilder: (context, index) {
-                return ListTile(
-                  title: GetData(documentId: docIds[index]),
-                );
+                if (index < userParticipatedDocIds.length) {
+                  return ListTile(
+                    title: GetData(documentId: userParticipatedDocIds[index]),
+                  );
+                } else {
+                  final otherIndex = index - userParticipatedDocIds.length;
+                  return ListTile(
+                    title: GetData(documentId: otherDocIds[otherIndex]),
+                  );
+                }
               },
             ),
           ],
