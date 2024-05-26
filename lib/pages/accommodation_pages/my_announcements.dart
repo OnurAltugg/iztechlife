@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:iztechlife/service/accommodation_get_data/get_my_data.dart';
 
 import '../main_page.dart';
@@ -44,6 +45,15 @@ class _MyAnnouncementsState extends State<MyAnnouncements> {
           .collection('accommodation')
           .doc(documentId)
           .delete();
+      Fluttertoast.showToast(
+          msg: "Deleted successfully",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.CENTER,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.green,
+          textColor: Colors.white,
+          fontSize: 16.0
+      );
     }
   }
 

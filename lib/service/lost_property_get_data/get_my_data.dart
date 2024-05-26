@@ -103,7 +103,6 @@ class _GetMyDataState extends State<GetMyData> {
                                     if (imageUrl != null && imageUrl.isNotEmpty) {
                                       await _storage.deleteImageFromStorage(imageUrl);
                                     }
-                                    await FirebaseFirestore.instance.collection('lostProperty').doc(documentId).delete();
                                     widget.onDelete(documentId);
                                   },
                                   child: const Icon(Icons.delete, color: Colors.white),
