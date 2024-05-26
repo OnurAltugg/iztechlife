@@ -143,5 +143,4 @@ class _MyAnnouncementsState extends State<MyAnnouncements> {
       },
     );
   }
-
 }

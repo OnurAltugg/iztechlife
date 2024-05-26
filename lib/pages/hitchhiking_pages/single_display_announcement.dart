@@ -1,11 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 import '../main_page.dart';
 
 class SingleDisplayAnnouncement extends StatelessWidget {
-  final String userName, userEmail, userPhone, description, carInfo, date, time, departure, destination, quota, documentId;
+  final String userName, userEmail, userPhone, description, carInfo, date, time, departure, destination, documentId;
 
   const SingleDisplayAnnouncement({
     super.key,
@@ -18,7 +19,6 @@ class SingleDisplayAnnouncement extends StatelessWidget {
     required this.time,
     required this.departure,
     required this.destination,
-    required this.quota,
     required this.documentId
   });
 
@@ -83,8 +83,6 @@ class SingleDisplayAnnouncement extends StatelessWidget {
               const SizedBox(height: 15.0),
               _buildText("Destination Location", destination),
               const SizedBox(height: 15.0),
-              _buildText("Quota", quota),
-              const SizedBox(height: 15.0),
               _buildText("Created By", userName),
               const SizedBox(height: 15.0),
               _buildText("Email", userEmail),
@@ -103,7 +101,24 @@ class SingleDisplayAnnouncement extends StatelessWidget {
                           return const SizedBox.shrink();
                         }
                         final List<dynamic> participants = snapshot.data!['participants'];
-                        if (participants.contains(user.uid)) {
+                        final participant = participants.firstWhere(
+                              (participant) => participant['id'] == user.uid,
+                          orElse: () => null,
+                        );
+
+                        if (participant != null && participant['status'] == 'rejected') {
+                          return const Text(
+                            "You have been rejected from the trip.",
+                            style: TextStyle(
+                              fontSize: 16.0,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.red,
+                            ),
+                          );
+                        }
+
+                        bool isUserParticipating = participant != null;
+                        if (isUserParticipating) {
                           return ElevatedButton(
                             onPressed: () async {
                               showDialog(
@@ -123,9 +138,18 @@ class SingleDisplayAnnouncement extends StatelessWidget {
                                         onPressed: () async {
                                           Navigator.of(context).pop();
                                           final List<dynamic> updatedParticipants = List.from(participants);
-                                          updatedParticipants.remove(user.uid);
+                                          updatedParticipants.removeWhere((participant) => participant['id'] == user.uid);
                                           await FirebaseFirestore.instance.collection('hitchhiking').doc(documentId).update({'participants': updatedParticipants});
-                                        },
+                                          Fluttertoast.showToast(
+                                              msg: "You withdrew your request!",
+                                              toastLength: Toast.LENGTH_SHORT,
+                                              gravity: ToastGravity.CENTER,
+                                              timeInSecForIosWeb: 1,
+                                              backgroundColor: Colors.red,
+                                              textColor: Colors.white,
+                                              fontSize: 16.0
+                                          );
+                                          },
                                         child: const Text('Yes'),
                                       ),
                                     ],
@@ -166,9 +190,18 @@ class SingleDisplayAnnouncement extends StatelessWidget {
                                           final DocumentSnapshot hitchhikingSnapshot = await hitchhiking.get();
                                           if (hitchhikingSnapshot.exists) {
                                             final List<dynamic> participants = hitchhikingSnapshot['participants'];
-                                            participants.add(user.uid);
+                                            participants.add({"status": "waiting", "id": user.uid});
                                             await hitchhiking.update({'participants': participants});
                                           }
+                                          Fluttertoast.showToast(
+                                              msg: "Your request has been sent.",
+                                              toastLength: Toast.LENGTH_SHORT,
+                                              gravity: ToastGravity.CENTER,
+                                              timeInSecForIosWeb: 1,
+                                              backgroundColor: Colors.green,
+                                              textColor: Colors.white,
+                                              fontSize: 16.0
+                                          );
                                         },
                                         child: const Text('Yes'),
                                       ),

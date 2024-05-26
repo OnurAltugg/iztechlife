@@ -206,7 +206,7 @@ class SingleDisplayAnnouncement extends StatelessWidget {
                                   participants.add({"status": "waiting", "id": user.uid});
                                   await socialisation.update({'participants': participants});
                                   Fluttertoast.showToast(
-                                      msg: "You've joined the Event!",
+                                      msg: "Your request has been sent.",
                                       toastLength: Toast.LENGTH_SHORT,
                                       gravity: ToastGravity.CENTER,
                                       timeInSecForIosWeb: 1,

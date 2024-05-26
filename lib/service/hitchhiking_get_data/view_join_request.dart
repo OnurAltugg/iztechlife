@@ -4,7 +4,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import '../../pages/main_page.dart';
 
 class ViewJoinRequestsPage extends StatefulWidget {
-  final List<String> participants;
+  final List<Map<String, dynamic>> participants;
   final String documentId;
 
   const ViewJoinRequestsPage({super.key, required this.participants, required this.documentId});
@@ -14,12 +14,66 @@ class ViewJoinRequestsPage extends StatefulWidget {
 }
 
 class _ViewJoinRequestsPageState extends State<ViewJoinRequestsPage> {
-  late List<String> participants;
+  late List<Map<String, dynamic>> participants;
 
   @override
   void initState() {
     super.initState();
     participants = List.from(widget.participants);
+  }
+
+  Future<void> _removeParticipant(Map<String, dynamic> participant) async {
+    final updatedParticipants = List.from(participants);
+    updatedParticipants.remove(participant);
+
+    final updatedParticipant = {...participant, 'status': 'rejected'};
+    updatedParticipants.add(updatedParticipant);
+
+    await FirebaseFirestore.instance.collection('hitchhiking').doc(widget.documentId)
+        .update({
+      'participants': updatedParticipants,
+    });
+
+    Fluttertoast.showToast(
+        msg: "User successfully removed from trip.",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 1,
+        backgroundColor: Colors.green,
+        textColor: Colors.white,
+        fontSize: 16.0
+    );
+
+    setState(() {
+      participants = updatedParticipants.cast<Map<String, dynamic>>();
+    });
+  }
+
+  Future<void> _confirmParticipant(Map<String, dynamic> participant) async {
+    final updatedParticipants = List.from(participants);
+    updatedParticipants.remove(participant);
+
+    final updatedParticipant = {...participant, 'status': 'confirmed'};
+    updatedParticipants.add(updatedParticipant);
+
+    await FirebaseFirestore.instance.collection('hitchhiking').doc(widget.documentId)
+        .update({
+      'participants': updatedParticipants,
+    });
+
+    Fluttertoast.showToast(
+        msg: "User accepted to trip.",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 1,
+        backgroundColor: Colors.green,
+        textColor: Colors.white,
+        fontSize: 16.0
+    );
+
+    setState(() {
+      participants = updatedParticipants.cast<Map<String, dynamic>>();
+    });
   }
 
   @override
@@ -103,7 +157,8 @@ class _ViewJoinRequestsPageState extends State<ViewJoinRequestsPage> {
             child: ListView.builder(
               itemCount: participants.length,
               itemBuilder: (context, index) {
-                final String userId = participants[index];
+                final participant = participants[index];
+                final userId = participant['id'];
                 return StreamBuilder<DocumentSnapshot>(
                   stream: FirebaseFirestore.instance.collection('user').doc(userId).snapshots(),
                   builder: (context, userSnapshot) {
@@ -153,51 +208,55 @@ class _ViewJoinRequestsPageState extends State<ViewJoinRequestsPage> {
                                   'Phone: $userPhone',
                                   style: const TextStyle(fontSize: 16.0, color: Colors.white),
                                 ),
+                              if (participant['status'] == 'waiting')
+                                const Text(
+                                  'Waiting your response...',
+                                  style: TextStyle(fontSize: 16.0, color: Colors.black, fontWeight: FontWeight.bold,),
+                                ),
+                              if (participant['status'] == 'confirmed')
+                                const Text(
+                                  'Passenger',
+                                  style: TextStyle(fontSize: 16.0, color: Colors.black, fontWeight: FontWeight.bold,),
+                                ),
+                              if (participant['status'] == 'rejected')
+                                const Text(
+                                  'Rejected!',
+                                  style: TextStyle(fontSize: 16.0, color: Colors.black, fontWeight: FontWeight.bold,),
+                                ),
                             ],
                           ),
-                          trailing: IconButton(
-                            icon: const Icon(Icons.highlight_remove, color: Colors.white),
-                            onPressed: () async {
-                              bool confirm = await showDialog(
-                                context: context,
-                                builder: (context) => AlertDialog(
-                                  title: const Text('Reject request for participation'),
-                                  content: const Text("Are you sure you want to turn down the user's request to participate?"),
-                                  actions: <Widget>[
-                                    TextButton(
-                                      onPressed: () {
-                                        Navigator.of(context).pop(false);
-                                      },
-                                      child: const Text('No'),
-                                    ),
-                                    TextButton(
-                                      onPressed: () {
-                                        Navigator.of(context).pop(true);
-                                      },
-                                      child: const Text('Yes'),
-                                    ),
-                                  ],
+                          trailing: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              if (participant['status'] == 'waiting')
+                                IconButton(
+                                  icon: const Icon(Icons.check_circle, color: Colors.white),
+                                  onPressed: () async {
+                                    await _confirmParticipant(participant);
+                                  },
                                 ),
-                              );
-                              if (confirm) {
-                                await FirebaseFirestore.instance.collection('hitchhiking').doc(widget.documentId)
-                                    .update({
-                                  'participants': FieldValue.arrayRemove([userId])
-                                });
-                                setState(() {
-                                  participants.remove(userId);
-                                });
-                                Fluttertoast.showToast(
-                                    msg: "User request successfully removed.",
-                                    toastLength: Toast.LENGTH_SHORT,
-                                    gravity: ToastGravity.BOTTOM,
-                                    timeInSecForIosWeb: 1,
-                                    backgroundColor: Colors.green,
-                                    textColor: Colors.white,
-                                    fontSize: 16.0
-                                );
-                              }
-                            },
+                              if (participant['status'] == 'waiting')
+                                IconButton(
+                                  icon: const Icon(Icons.highlight_remove, color: Colors.white),
+                                  onPressed: () async {
+                                    await _removeParticipant(participant);
+                                  },
+                                ),
+                              if (participant['status'] == 'rejected')
+                                IconButton(
+                                  icon: const Icon(Icons.check_circle, color: Colors.white),
+                                  onPressed: () async {
+                                    await _confirmParticipant(participant);
+                                  },
+                                ),
+                              if (participant['status'] == 'confirmed')
+                                IconButton(
+                                  icon: const Icon(Icons.highlight_remove, color: Colors.white),
+                                  onPressed: () async {
+                                    await _removeParticipant(participant);
+                                  },
+                                ),
+                            ],
                           ),
                         ),
                       ),

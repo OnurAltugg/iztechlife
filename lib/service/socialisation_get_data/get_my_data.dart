@@ -21,6 +21,12 @@ class GetMyData extends StatelessWidget {
   TextEditingController timeController = TextEditingController();
   TextEditingController quotaController = TextEditingController();
 
+  int _countParticipantsWithWaitingResponse(List<dynamic> participants) {
+    return participants
+        .where((participant) => participant is Map<String, dynamic> && participant['status'] == "waiting")
+        .length;
+  }
+
   @override
   Widget build(BuildContext context) {
     CollectionReference socialisation = FirebaseFirestore.instance.collection('socialisation');
@@ -207,6 +213,20 @@ class GetMyData extends StatelessWidget {
                                 ),
                               ),
                             ),
+                            if(_countParticipantsWithWaitingResponse(data['participants']) != 0)
+                              Text.rich(
+                                TextSpan(
+                                  children: [
+                                    TextSpan(
+                                      text: "${_countParticipantsWithWaitingResponse(data['participants'])} users are waiting for your answer.",
+                                      style: const TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 14.0,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
                           ],
                         ),
                       ),

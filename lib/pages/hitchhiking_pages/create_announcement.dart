@@ -24,7 +24,6 @@ class _CreateAnnouncementState extends State<CreateAnnouncement> {
   TextEditingController destinationLocationController = TextEditingController();
   TextEditingController dateController = TextEditingController();
   TextEditingController timeController = TextEditingController();
-  TextEditingController quotaController = TextEditingController();
 
   final hourFormat = DateFormat("HH:mm");
   final dateFormat = DateFormat("dd-MM-yyyy");
@@ -36,7 +35,6 @@ class _CreateAnnouncementState extends State<CreateAnnouncement> {
 
   @override
   void dispose() {
-    quotaController.dispose();
     super.dispose();
   }
 
@@ -134,7 +132,6 @@ class _CreateAnnouncementState extends State<CreateAnnouncement> {
               _buildTextField("Destination Location", destinationLocationController),
               _buildDateField("Date", dateController),
               _buildTimeField("Time", timeController),
-              _buildQuotaField("Quota", quotaController),
               const SizedBox(height: 15.0),
               Center(
                 child: ElevatedButton(
@@ -148,7 +145,6 @@ class _CreateAnnouncementState extends State<CreateAnnouncement> {
                         "destination": destinationLocationController.text,
                         "date": dateController.text,
                         "time": timeController.text,
-                        "quota": quotaController.text,
                         "id": id,
                         "user_id": userId,
                         "participants": []
@@ -302,48 +298,12 @@ class _CreateAnnouncementState extends State<CreateAnnouncement> {
     );
   }
 
-  Widget _buildQuotaField(String labelText, TextEditingController inputController) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          labelText,
-          style: const TextStyle(
-              color: Colors.black, fontSize: 24.0, fontWeight: FontWeight.bold),
-        ),
-        const SizedBox(height: 3.0),
-        Container(
-          padding: const EdgeInsets.only(left: 10.0),
-          decoration: BoxDecoration(
-            border: Border.all(),
-            borderRadius: BorderRadius.circular(10),
-          ),
-          child: TextFormField(
-            controller: inputController,
-            keyboardType: TextInputType.number,
-            inputFormatters: <TextInputFormatter>[
-              FilteringTextInputFormatter.digitsOnly
-            ],
-            style: const TextStyle(color: Colors.black),
-            decoration: const InputDecoration(
-              border: InputBorder.none,
-            ),
-            cursorColor: const Color(0xFFB71C1C),
-          ),
-        ),
-        const SizedBox(height: 15.0),
-      ],
-    );
-  }
-
   bool _validateForm() {
     return descriptionController.text.isNotEmpty &&
         carInfoController.text.isNotEmpty &&
         departureLocationController.text.isNotEmpty &&
         destinationLocationController.text.isNotEmpty &&
         dateController.text.isNotEmpty &&
-        timeController.text.isNotEmpty &&
-        quotaController.text.isNotEmpty &&
-        int.parse(quotaController.text) > 0;
+        timeController.text.isNotEmpty;
   }
 }

@@ -20,6 +20,99 @@ class _DisplayAnnouncementsState extends State<DisplayAnnouncements> {
     });
   }
 
+  Future<void> _showInfoDialog() async {
+    await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text("Icon Information"),
+          content: const Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Icon(
+                    Icons.person,
+                    color: Colors.black,
+                    size: 20,
+                  ),
+                  SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      "Shows how many users have been accepted on the journey.",
+                      style: TextStyle(fontSize: 16),
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(height: 16),
+              Row(
+                children: [
+                  Icon(
+                    Icons.question_mark,
+                    color: Colors.black,
+                    size: 20,
+                  ),
+                  SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      "Indicates that your opt-in request has been sent to the user and is awaiting confirmation.",
+                      style: TextStyle(fontSize: 16),
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(height: 16),
+              Row(
+                children: [
+                  Icon(
+                    Icons.assistant_navigation,
+                    color: Colors.black,
+                    size: 20,
+                  ),
+                  SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      "Indicates that you have been accepted for the trip.",
+                      style: TextStyle(fontSize: 16),
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(height: 16),
+              Row(
+                children: [
+                  Icon(
+                    Icons.cancel_schedule_send,
+                    color: Colors.black,
+                    size: 20,
+                  ),
+                  SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      "Indicates that you are not accepted for trip.",
+                      style: TextStyle(fontSize: 16),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text("Close"),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+
   @override
   void initState() {
     super.initState();
@@ -63,24 +156,37 @@ class _DisplayAnnouncementsState extends State<DisplayAnnouncements> {
             ),
           ),
         ),
-        bottom: const PreferredSize(
-          preferredSize: Size.fromHeight(50.0),
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(50.0),
           child: Padding(
-            padding: EdgeInsets.only(bottom: 8.0),
-            child: Text(
-              "Hitchhiking Service",
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 22.0,
-                fontWeight: FontWeight.bold,
-                color: Colors.black,
-                shadows: [
-                  Shadow(
-                    blurRadius: 2,
-                    offset: Offset(1, 1),
+            padding: const EdgeInsets.only(bottom: 8.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Text(
+                  "Hitchhiking Service",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 22.0,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                    shadows: [
+                      Shadow(
+                        blurRadius: 2,
+                        offset: Offset(1, 1),
+                      ),
+                    ],
                   ),
-                ],
-              ),
+                ),
+                const SizedBox(width: 4),
+                GestureDetector(
+                  onTap: _showInfoDialog,
+                  child: const Icon(
+                    Icons.info,
+                    color: Colors.black,
+                  ),
+                ),
+              ],
             ),
           ),
         ),

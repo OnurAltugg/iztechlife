@@ -24,6 +24,12 @@ class GetMyData extends StatelessWidget {
   TextEditingController timeController = TextEditingController();
   TextEditingController quotaController = TextEditingController();
 
+  int _countParticipantsWithWaitingResponse(List<dynamic> participants) {
+    return participants
+        .where((participant) => participant is Map<String, dynamic> && participant['status'] == "waiting")
+        .length;
+  }
+
   @override
   Widget build(BuildContext context) {
     CollectionReference hitchhiking =
@@ -36,9 +42,9 @@ class GetMyData extends StatelessWidget {
             Map<String, dynamic> data =
             snapshot.data!.data() as Map<String, dynamic>;
             if (user.uid == data['user_id']) {
-              List<String> participants = [];
+              List<Map<String, dynamic>> participants = [];
               if (data['participants'] != null) {
-                participants = List<String>.from(data['participants']);
+                participants = List<Map<String, dynamic>>.from(data['participants']);
               }
               return SingleChildScrollView(
                 child: Column(
@@ -89,7 +95,6 @@ class GetMyData extends StatelessWidget {
                                     destinationLocationController.text = data['destination'];
                                     dateController.text = data['date'];
                                     timeController.text = data['time'];
-                                    quotaController.text = data['quota'];
                                     editAnnouncementDetail(context, documentId);
                                   },
                                   child: const Icon(Icons.edit, color: Colors.white),
@@ -214,28 +219,6 @@ class GetMyData extends StatelessWidget {
                               ),
                             ),
                             const SizedBox(height: 3.0),
-                            Text.rich(
-                              TextSpan(
-                                children: [
-                                  const TextSpan(
-                                    text: "Quota: ",
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 18.0,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  TextSpan(
-                                    text: "${data['quota']}",
-                                    style: const TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 18.0,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            const SizedBox(height: 3.0),
                             ElevatedButton(
                               onPressed: () {
                                 Navigator.push(
@@ -254,6 +237,20 @@ class GetMyData extends StatelessWidget {
                                 ),
                               ),
                             ),
+                            if(_countParticipantsWithWaitingResponse(data['participants']) != 0)
+                              Text.rich(
+                                TextSpan(
+                                  children: [
+                                    TextSpan(
+                                      text: "${_countParticipantsWithWaitingResponse(data['participants'])} users are waiting for your answer.",
+                                      style: const TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 14.0,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
                           ],
                         ),
                       ),
@@ -295,7 +292,6 @@ class GetMyData extends StatelessWidget {
             _buildTextField("Destination Location", destinationLocationController),
             _buildDateField("Date", dateController),
             _buildTimeField("Time", timeController),
-            _buildQuotaField("Quota", quotaController),
             Center(
                 child: ElevatedButton(
                     onPressed: () async {
@@ -307,7 +303,6 @@ class GetMyData extends StatelessWidget {
                           "destination": destinationLocationController.text,
                           "date": dateController.text,
                           "time": timeController.text,
-                          "quota": quotaController.text,
                           "id": id,
                         };
                         await DatabaseMethods()
@@ -451,49 +446,12 @@ class GetMyData extends StatelessWidget {
     );
   }
 
-  Widget _buildQuotaField(
-      String labelText, TextEditingController inputController) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          labelText,
-          style: const TextStyle(
-              color: Colors.black, fontSize: 20.0, fontWeight: FontWeight.bold),
-        ),
-        const SizedBox(height: 3.0),
-        Container(
-          padding: const EdgeInsets.only(left: 10.0),
-          decoration: BoxDecoration(
-            border: Border.all(),
-            borderRadius: BorderRadius.circular(10),
-          ),
-          child: TextFormField(
-            controller: inputController,
-            keyboardType: TextInputType.number,
-            inputFormatters: <TextInputFormatter>[
-              FilteringTextInputFormatter.digitsOnly
-            ],
-            style: const TextStyle(color: Colors.black),
-            decoration: const InputDecoration(
-              border: InputBorder.none,
-            ),
-            cursorColor: const Color(0xFFB71C1C),
-          ),
-        ),
-        const SizedBox(height: 15.0),
-      ],
-    );
-  }
-
   bool _validateForm() {
     return descriptionController.text.isNotEmpty &&
         carInfoController.text.isNotEmpty &&
         departureLocationController.text.isNotEmpty &&
         destinationLocationController.text.isNotEmpty &&
         dateController.text.isNotEmpty &&
-        timeController.text.isNotEmpty &&
-        quotaController.text.isNotEmpty &&
-        int.parse(quotaController.text) > 0;
+        timeController.text.isNotEmpty;
   }
 }

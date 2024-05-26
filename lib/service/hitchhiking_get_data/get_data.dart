@@ -7,6 +7,33 @@ class GetData extends StatelessWidget {
   final String documentId;
   const GetData({super.key, required this.documentId});
 
+  bool _isUserWaiting(List<dynamic> participants, String currentUserId) {
+    return participants.any((participant) =>
+    participant is Map<String, dynamic> &&
+        participant['id'] == currentUserId &&
+        participant['status'] == 'waiting');
+  }
+
+  bool _isUserConfirming(List<dynamic> participants, String currentUserId) {
+    return participants.any((participant) =>
+    participant is Map<String, dynamic> &&
+        participant['id'] == currentUserId &&
+        participant['status'] == 'confirmed');
+  }
+
+  bool _isUserRejected(List<dynamic> participants, String currentUserId) {
+    return participants.any((participant) =>
+    participant is Map<String, dynamic> &&
+        participant['id'] == currentUserId &&
+        participant['status'] == 'rejected');
+  }
+
+  int _countParticipantsWithStatus(List<dynamic> participants) {
+    return participants
+        .where((participant) => participant is Map<String, dynamic> && participant['status'] == "confirmed")
+        .length;
+  }
+
   @override
   Widget build(BuildContext context) {
     final hitchhiking = FirebaseFirestore.instance.collection('hitchhiking');
@@ -68,7 +95,6 @@ class GetData extends StatelessWidget {
                         time: hitchhikingData['time'],
                         departure: hitchhikingData['departure'],
                         destination: hitchhikingData['destination'],
-                        quota: hitchhikingData['quota'],
                         documentId: documentId,
                       ),
                     ),
@@ -90,9 +116,21 @@ class GetData extends StatelessWidget {
                             ),
                           ),
                           const Spacer(),
-                          if ((List.from(hitchhikingData['participants'])).contains(currentUserId))
+                          if (_isUserWaiting(hitchhikingData['participants'], currentUserId))
+                            const Icon(
+                              Icons.question_mark,
+                              color: Colors.yellow,
+                              size: 24.0,
+                            ),
+                          if (_isUserConfirming(hitchhikingData['participants'], currentUserId))
                             const Icon(
                               Icons.assistant_navigation,
+                              color: Colors.yellow,
+                              size: 24.0,
+                            ),
+                          if (_isUserRejected(hitchhikingData['participants'], currentUserId))
+                            const Icon(
+                              Icons.cancel_schedule_send,
                               color: Colors.yellow,
                               size: 24.0,
                             ),
@@ -118,13 +156,12 @@ class GetData extends StatelessWidget {
                           ),
                           const SizedBox(width: 4),
                           Text(
-                            "${(List.from(hitchhikingData['participants'])).length}",
+                            "${_countParticipantsWithStatus(hitchhikingData['participants'])}",
                             style: const TextStyle(
                               color: Colors.white,
                               fontSize: 16.0,
                             ),
                           ),
-
                         ],
                       ),
 
