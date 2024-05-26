@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
+import '../../pages/lost_property_pages/full_screen_image.dart';
 import '../database.dart';
 
 class GetMyData extends StatefulWidget {
@@ -421,29 +422,38 @@ class _GetMyDataState extends State<GetMyData> {
         scrollDirection: Axis.horizontal,
         itemCount: imageUrls.length,
         itemBuilder: (context, index) {
-          return Padding(
-            padding: const EdgeInsets.only(right: 8.0),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(8.0),
-              child: Image.network(
-                imageUrls[index],
-                fit: BoxFit.cover,
-                width: 100,
-                height: 100,
-                loadingBuilder: (context, child, loadingProgress) {
-                  if (loadingProgress == null) {
-                    return child;
-                  } else {
+          return InkWell(
+            onTap: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => FullScreenImage(imageUrl: imageUrls[index]),
+                ),
+              );
+            },
+            child: Padding(
+              padding: const EdgeInsets.only(right: 8.0),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(8.0),
+                child: Image.network(
+                  imageUrls[index],
+                  fit: BoxFit.cover,
+                  width: 100,
+                  height: 100,
+                  loadingBuilder: (context, child, loadingProgress) {
+                    if (loadingProgress == null) {
+                      return child;
+                    } else {
+                      return const Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    }
+                  },
+                  errorBuilder: (context, error, stackTrace) {
                     return const Center(
-                      child: CircularProgressIndicator(),
+                      child: Text('Error Loading Image'),
                     );
-                  }
-                },
-                errorBuilder: (context, error, stackTrace) {
-                  return const Center(
-                    child: Text('Error Loading Image'),
-                  );
-                },
+                  },
+                ),
               ),
             ),
           );
@@ -451,6 +461,7 @@ class _GetMyDataState extends State<GetMyData> {
       ),
     );
   }
+
 
 
   bool _validateForm() {
