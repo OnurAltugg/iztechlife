@@ -119,7 +119,24 @@ class SingleDisplayAnnouncement extends StatelessWidget {
                           return const SizedBox.shrink();
                         }
                         final List<dynamic> participants = snapshot.data!['participants'];
-                        if (participants.contains(user.uid)) {
+                        final participant = participants.firstWhere(
+                              (participant) => participant['id'] == user.uid,
+                          orElse: () => null,
+                        );
+
+                        if (participant != null && participant['status'] == 'rejected') {
+                          return const Text(
+                            "You have been rejected from the event.",
+                            style: TextStyle(
+                              fontSize: 16.0,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.red,
+                            ),
+                          );
+                        }
+
+                        bool isUserParticipating = participant != null;
+                        if (isUserParticipating) {
                           return ElevatedButton(
                             onPressed: () async {
                               showDialog(
@@ -139,10 +156,10 @@ class SingleDisplayAnnouncement extends StatelessWidget {
                                         onPressed: () async {
                                           Navigator.of(context).pop();
                                           final List<dynamic> updatedParticipants = List.from(participants);
-                                          updatedParticipants.remove(user.uid);
+                                          updatedParticipants.removeWhere((participant) => participant['id'] == user.uid);
                                           await FirebaseFirestore.instance.collection('socialisation').doc(documentId).update({'participants': updatedParticipants});
                                           Fluttertoast.showToast(
-                                              msg: "You've left Event!",
+                                              msg: "You've left the Event!",
                                               toastLength: Toast.LENGTH_SHORT,
                                               gravity: ToastGravity.CENTER,
                                               timeInSecForIosWeb: 1,
@@ -169,8 +186,8 @@ class SingleDisplayAnnouncement extends StatelessWidget {
                           );
                         } else {
                           return ElevatedButton(
-                            onPressed: () async{
-                              if(participants.length >= int.parse(quota)){
+                            onPressed: () async {
+                              if (_countParticipantsWithStatus(participants) >= int.parse(quota)) {
                                 Fluttertoast.showToast(
                                     msg: "No spot available! Please try again later.",
                                     toastLength: Toast.LENGTH_SHORT,
@@ -180,15 +197,14 @@ class SingleDisplayAnnouncement extends StatelessWidget {
                                     textColor: Colors.white,
                                     fontSize: 16.0
                                 );
-                              }
-                              else{
+                              } else {
                                 final user = FirebaseAuth.instance.currentUser!;
-                                final hitchhiking = FirebaseFirestore.instance.collection('socialisation').doc(documentId);
-                                final DocumentSnapshot hitchhikingSnapshot = await hitchhiking.get();
-                                if (hitchhikingSnapshot.exists) {
-                                  final List<dynamic> participants = hitchhikingSnapshot['participants'];
-                                  participants.add(user.uid);
-                                  await hitchhiking.update({'participants': participants});
+                                final socialisation = FirebaseFirestore.instance.collection('socialisation').doc(documentId);
+                                final DocumentSnapshot socialisationSnapshot = await socialisation.get();
+                                if (socialisationSnapshot.exists) {
+                                  final List<dynamic> participants = socialisationSnapshot['participants'];
+                                  participants.add({"status": "waiting", "id": user.uid});
+                                  await socialisation.update({'participants': participants});
                                   Fluttertoast.showToast(
                                       msg: "You've joined the Event!",
                                       toastLength: Toast.LENGTH_SHORT,
@@ -245,5 +261,11 @@ class SingleDisplayAnnouncement extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  int _countParticipantsWithStatus(List<dynamic> participants) {
+    return participants
+        .where((participant) => participant is Map<String, dynamic> && participant['status'] == "confirmed")
+        .length;
   }
 }

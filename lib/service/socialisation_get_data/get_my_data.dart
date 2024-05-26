@@ -23,19 +23,17 @@ class GetMyData extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    CollectionReference socialisation =
-    FirebaseFirestore.instance.collection('socialisation');
+    CollectionReference socialisation = FirebaseFirestore.instance.collection('socialisation');
     return StreamBuilder<DocumentSnapshot>(
       stream: socialisation.doc(documentId).snapshots(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.active) {
           if (snapshot.hasData && snapshot.data != null) {
-            Map<String, dynamic> data =
-            snapshot.data!.data() as Map<String, dynamic>;
+            Map<String, dynamic> data = snapshot.data!.data() as Map<String, dynamic>;
             if (user.uid == data['user_id']) {
-              List<String> participants = [];
+              List<Map<String, dynamic>> participants = [];
               if (data['participants'] != null) {
-                participants = List<String>.from(data['participants']);
+                participants = List<Map<String, dynamic>>.from(data['participants']);
               }
               return SingleChildScrollView(
                 child: Column(
@@ -48,8 +46,9 @@ class GetMyData extends StatelessWidget {
                         padding: const EdgeInsets.all(20.0),
                         width: MediaQuery.of(context).size.width,
                         decoration: BoxDecoration(
-                            color: const Color(0xFFB71C1C),
-                            borderRadius: BorderRadius.circular(10.0)),
+                          color: const Color(0xFFB71C1C),
+                          borderRadius: BorderRadius.circular(10.0),
+                        ),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -95,7 +94,7 @@ class GetMyData extends StatelessWidget {
                                     onDelete(documentId);
                                   },
                                   child: const Icon(Icons.delete, color: Colors.white),
-                                )
+                                ),
                               ],
                             ),
                             const SizedBox(height: 3.0),
@@ -192,7 +191,10 @@ class GetMyData extends StatelessWidget {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) => ShowParticipantsPage(participants: participants, documentId: documentId),
+                                    builder: (context) => ShowParticipantsPage(
+                                      participants: participants,
+                                      documentId: documentId,
+                                    ),
                                   ),
                                 );
                               },
@@ -223,7 +225,7 @@ class GetMyData extends StatelessWidget {
   Future editAnnouncementDetail(BuildContext context, String id) async {
     DocumentSnapshot docSnapshot = await FirebaseFirestore.instance.collection('socialisation').doc(id).get();
     Map<String, dynamic> data = docSnapshot.data() as Map<String, dynamic>;
-    List<String> participants = List<String>.from(data['participants'] ?? []);
+    List<Map<String, dynamic>> participants = List<Map<String, dynamic>>.from(data['participants'] ?? []);
 
     return showDialog(
       context: context,
@@ -253,7 +255,7 @@ class GetMyData extends StatelessWidget {
               Center(
                 child: ElevatedButton(
                   onPressed: () async {
-                    if (_validateForm(participants.length)) {
+                    if (_validateForm(participants)) {
                       Map<String, dynamic> updateInfoMap = {
                         "description": descriptionController.text,
                         "location": locationController.text,
@@ -262,30 +264,28 @@ class GetMyData extends StatelessWidget {
                         "quota": quotaController.text,
                         "id": id,
                       };
-                      await DatabaseMethods()
-                          .updateDetails(updateInfoMap, id, "socialisation")
-                          .then((value) {
+                      await DatabaseMethods().updateDetails(updateInfoMap, id, "socialisation").then((value) {
                         Fluttertoast.showToast(
-                            msg: "Updated successfully.",
-                            toastLength: Toast.LENGTH_SHORT,
-                            gravity: ToastGravity.CENTER,
-                            timeInSecForIosWeb: 1,
-                            backgroundColor: Colors.green,
-                            textColor: Colors.white,
-                            fontSize: 16.0);
-                      });
-                      Navigator.pop(
-                        context,
-                      );
-                    } else {
-                      Fluttertoast.showToast(
-                          msg: "Quota cannot be less than the number of participants.",
+                          msg: "Updated successfully.",
                           toastLength: Toast.LENGTH_SHORT,
                           gravity: ToastGravity.CENTER,
                           timeInSecForIosWeb: 1,
-                          backgroundColor: Colors.red,
+                          backgroundColor: Colors.green,
                           textColor: Colors.white,
-                          fontSize: 16.0);
+                          fontSize: 16.0,
+                        );
+                      });
+                      Navigator.pop(context);
+                    } else {
+                      Fluttertoast.showToast(
+                        msg: "Quota cannot be less than the number of confirmed participants.",
+                        toastLength: Toast.LENGTH_SHORT,
+                        gravity: ToastGravity.CENTER,
+                        timeInSecForIosWeb: 1,
+                        backgroundColor: Colors.red,
+                        textColor: Colors.white,
+                        fontSize: 16.0,
+                      );
                     }
                   },
                   child: const Text("Update"),
@@ -298,15 +298,13 @@ class GetMyData extends StatelessWidget {
     );
   }
 
-  Widget _buildTextField(
-      String labelText, TextEditingController inputController) {
+  Widget _buildTextField(String labelText, TextEditingController inputController) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           labelText,
-          style: const TextStyle(
-              color: Colors.black, fontSize: 20.0, fontWeight: FontWeight.bold),
+          style: const TextStyle(color: Colors.black, fontSize: 20.0, fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 3.0),
         Container(
@@ -329,15 +327,13 @@ class GetMyData extends StatelessWidget {
     );
   }
 
-  Widget _buildTimeField(
-      String labelText, TextEditingController inputController) {
+  Widget _buildTimeField(String labelText, TextEditingController inputController) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           labelText,
-          style: const TextStyle(
-              color: Colors.black, fontSize: 20.0, fontWeight: FontWeight.bold),
+          style: const TextStyle(color: Colors.black, fontSize: 20.0, fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 3.0),
         Container(
@@ -351,8 +347,7 @@ class GetMyData extends StatelessWidget {
             onShowPicker: (context, currentValue) async {
               final time = await showTimePicker(
                 context: context,
-                initialTime:
-                TimeOfDay.fromDateTime(currentValue ?? DateTime.now()),
+                initialTime: TimeOfDay.fromDateTime(currentValue ?? DateTime.now()),
               );
               return DateTimeField.convert(time);
             },
@@ -367,15 +362,13 @@ class GetMyData extends StatelessWidget {
     );
   }
 
-  Widget _buildDateField(
-      String labelText, TextEditingController inputController) {
+  Widget _buildDateField(String labelText, TextEditingController inputController) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           labelText,
-          style: const TextStyle(
-              color: Colors.black, fontSize: 20.0, fontWeight: FontWeight.bold),
+          style: const TextStyle(color: Colors.black, fontSize: 20.0, fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 3.0),
         Container(
@@ -406,15 +399,13 @@ class GetMyData extends StatelessWidget {
     );
   }
 
-  Widget _buildQuotaField(
-      String labelText, TextEditingController inputController) {
+  Widget _buildQuotaField(String labelText, TextEditingController inputController) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           labelText,
-          style: const TextStyle(
-              color: Colors.black, fontSize: 20.0, fontWeight: FontWeight.bold),
+          style: const TextStyle(color: Colors.black, fontSize: 20.0, fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 3.0),
         Container(
@@ -427,12 +418,10 @@ class GetMyData extends StatelessWidget {
             controller: inputController,
             keyboardType: TextInputType.number,
             inputFormatters: <TextInputFormatter>[
-              FilteringTextInputFormatter.digitsOnly
+              FilteringTextInputFormatter.digitsOnly,
             ],
             style: const TextStyle(color: Colors.black),
-            decoration: const InputDecoration(
-              border: InputBorder.none,
-            ),
+            decoration: const InputDecoration(border: InputBorder.none),
             cursorColor: const Color(0xFFB71C1C),
           ),
         ),
@@ -441,7 +430,7 @@ class GetMyData extends StatelessWidget {
     );
   }
 
-  bool _validateForm(int participantCount) {
+  bool _validateForm(List<Map<String, dynamic>> participants) {
     if (descriptionController.text.isEmpty ||
         locationController.text.isEmpty ||
         dateController.text.isEmpty ||
@@ -450,7 +439,8 @@ class GetMyData extends StatelessWidget {
         int.parse(quotaController.text) <= 0) {
       return false;
     }
-    if (int.parse(quotaController.text) < participantCount) {
+    int confirmedParticipantCount = participants.where((participant) => participant['status'] == 'confirmed').length;
+    if (int.parse(quotaController.text) < confirmedParticipantCount) {
       return false;
     }
     return true;

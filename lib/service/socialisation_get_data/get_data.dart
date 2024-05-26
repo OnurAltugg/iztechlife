@@ -7,6 +7,33 @@ class GetData extends StatelessWidget {
   final String documentId;
   const GetData({super.key, required this.documentId});
 
+  bool _isUserWaiting(List<dynamic> participants, String currentUserId) {
+    return participants.any((participant) =>
+    participant is Map<String, dynamic> &&
+        participant['id'] == currentUserId &&
+        participant['status'] == 'waiting');
+  }
+
+  bool _isUserConfirming(List<dynamic> participants, String currentUserId) {
+    return participants.any((participant) =>
+    participant is Map<String, dynamic> &&
+        participant['id'] == currentUserId &&
+        participant['status'] == 'confirmed');
+  }
+
+  bool _isUserRejected(List<dynamic> participants, String currentUserId) {
+    return participants.any((participant) =>
+    participant is Map<String, dynamic> &&
+        participant['id'] == currentUserId &&
+        participant['status'] == 'rejected');
+  }
+
+  int _countParticipantsWithStatus(List<dynamic> participants) {
+    return participants
+        .where((participant) => participant is Map<String, dynamic> && participant['status'] == "confirmed")
+        .length;
+  }
+
   @override
   Widget build(BuildContext context) {
     final socialisation = FirebaseFirestore.instance.collection('socialisation');
@@ -88,9 +115,21 @@ class GetData extends StatelessWidget {
                             ),
                           ),
                           const Spacer(),
-                          if ((List.from(socialisationData['participants'])).contains(currentUserId))
+                          if (_isUserWaiting(socialisationData['participants'], currentUserId))
+                            const Icon(
+                              Icons.question_mark,
+                              color: Colors.yellow,
+                              size: 24.0,
+                            ),
+                          if (_isUserConfirming(socialisationData['participants'], currentUserId))
                             const Icon(
                               Icons.event_available,
+                              color: Colors.yellow,
+                              size: 24.0,
+                            ),
+                          if (_isUserRejected(socialisationData['participants'], currentUserId))
+                            const Icon(
+                              Icons.cancel_presentation_outlined,
                               color: Colors.yellow,
                               size: 24.0,
                             ),
@@ -116,7 +155,7 @@ class GetData extends StatelessWidget {
                           ),
                           const SizedBox(width: 4),
                           Text(
-                            "${(socialisationData['participants'] as List).length} / ${socialisationData['quota']}",
+                            "${_countParticipantsWithStatus(socialisationData['participants'])} / ${socialisationData['quota']}",
                             style: const TextStyle(
                               color: Colors.white,
                               fontSize: 16.0,
