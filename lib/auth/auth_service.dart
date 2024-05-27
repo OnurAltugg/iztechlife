@@ -60,6 +60,27 @@ class AuthService {
         for (QueryDocumentSnapshot doc in hitchhikingSnapshot.docs) {
           await FirebaseFirestore.instance.collection("hitchhiking").doc(doc.id).delete();
         }
+        QuerySnapshot socialisationSnapshot = await FirebaseFirestore.instance
+            .collection("socialisation")
+            .where('user_id', isEqualTo: user.uid)
+            .get();
+        for (QueryDocumentSnapshot doc in socialisationSnapshot.docs) {
+          await FirebaseFirestore.instance.collection("socialisation").doc(doc.id).delete();
+        }
+        QuerySnapshot lostPropertySnapshot = await FirebaseFirestore.instance
+            .collection("lostProperty")
+            .where('user_id', isEqualTo: user.uid)
+            .get();
+        for (QueryDocumentSnapshot doc in lostPropertySnapshot.docs) {
+          await FirebaseFirestore.instance.collection("lostProperty").doc(doc.id).delete();
+        }
+        QuerySnapshot accommodationSnapshot = await FirebaseFirestore.instance
+            .collection("accommodation")
+            .where('user_id', isEqualTo: user.uid)
+            .get();
+        for (QueryDocumentSnapshot doc in accommodationSnapshot.docs) {
+          await FirebaseFirestore.instance.collection("accommodation").doc(doc.id).delete();
+        }
         await user.delete();
       }
     } on FirebaseAuthException catch (e) {
