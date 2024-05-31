@@ -242,20 +242,6 @@ class _ViewJoinRequestsPageState extends State<ViewJoinRequestsPage> {
                                     await _removeParticipant(participant);
                                   },
                                 ),
-                              if (participant['status'] == 'rejected')
-                                IconButton(
-                                  icon: const Icon(Icons.check_circle, color: Colors.white),
-                                  onPressed: () async {
-                                    await _confirmParticipant(participant);
-                                  },
-                                ),
-                              if (participant['status'] == 'confirmed')
-                                IconButton(
-                                  icon: const Icon(Icons.highlight_remove, color: Colors.white),
-                                  onPressed: () async {
-                                    await _removeParticipant(participant);
-                                  },
-                                ),
                             ],
                           ),
                         ),
