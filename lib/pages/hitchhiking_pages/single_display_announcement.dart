@@ -64,6 +64,27 @@ class SingleDisplayAnnouncement extends StatelessWidget {
             ),
           ),
         ),
+        bottom: const PreferredSize(
+          preferredSize: Size.fromHeight(50.0),
+          child: Padding(
+            padding: EdgeInsets.only(bottom: 8.0),
+            child: Text(
+              "Hitchhiking Service",
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 22.0,
+                fontWeight: FontWeight.bold,
+                color: Colors.black,
+                shadows: [
+                  Shadow(
+                    blurRadius: 2,
+                    offset: Offset(1, 1),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
       ),
       body: SingleChildScrollView(
         child: Padding(
