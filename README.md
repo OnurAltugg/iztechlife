@@ -40,12 +40,12 @@
   <img src="Screenshots/Hitchhiking%20Pages/hitchhiking_withdraw_request.png" width="300" height="600" alt="Hitchhiking Single Announcement Detail Page with Withdraw Request">
 </div>
 <div style="display: flex; justify-content: space-around;">
+  <img src="Screenshots/Hitchhiking%20Pages/hitchhiking_rejected.png" width="300" height="600" alt="Hitchhiking Single Announcement Detail Page with Rejected">
   <img src="Screenshots/Hitchhiking%20Pages/hitchhiking_my_announcements.png" width="300" height="600" alt="Hitchhiking My Announcements Page">
-  <img src="Screenshots/Hitchhiking%20Pages/hitchhiking_update.png" width="300" height="600" alt="Hitchhiking Update Part">
 </div>
 <div style="display: flex; justify-content: space-around;">
+  <img src="Screenshots/Hitchhiking%20Pages/hitchhiking_update.png" width="300" height="600" alt="Hitchhiking Update Part">
   <img src="Screenshots/Hitchhiking%20Pages/view_join_request.png" width="300" height="600" alt="Hitchhiking View Join Request">
-  <img src="Screenshots/Hitchhiking%20Pages/hitchhiking_rejected.png" width="300" height="600" alt="Hitchhiking Single Announcement Detail Page with Rejected">
 </div>
 
 ## Socialisation Pages
@@ -62,12 +62,12 @@
   <img src="Screenshots/Socialisation%20Pages/socialisation_leave.png" width="300" height="600" alt="Socialisation Single Announcement Detail Page with Leave">
 </div>
 <div style="display: flex; justify-content: space-around;">
+  <img src="Screenshots/Socialisation%20Pages/socialisation_rejected.png" width="300" height="600" alt="Socialisation Single Announcement Detail Page with Rejected">
   <img src="Screenshots/Socialisation%20Pages/socialisation_my_announcements.png" width="300" height="600" alt="Socialisation My Announcements Page">
-  <img src="Screenshots/Socialisation%20Pages/socialisation_update.png" width="300" height="600" alt="Socialisation Update Part">
 </div>
 <div style="display: flex; justify-content: space-around;">
+  <img src="Screenshots/Socialisation%20Pages/socialisation_update.png" width="300" height="600" alt="Socialisation Update Part">
   <img src="Screenshots/Socialisation%20Pages/show_participants.png" width="300" height="600" alt="Socialisation Show Participants">
-  <img src="Screenshots/Socialisation%20Pages/socialisation_rejected.png" width="300" height="600" alt="Socialisation Single Announcement Detail Page with Rejected">
 </div>
 
 ## Lost Property Information Pages
